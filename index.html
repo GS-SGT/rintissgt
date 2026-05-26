@@ -1,0 +1,4121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sangatta Field · Cleaning Outdoor Monitoring</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Neutral professional palette */
+    --paper: #ffffff;
+    --paper-2: #f5f5f7;
+    --paper-3: #ebebee;
+    --ink: #0a0a0c;
+    --ink-2: #2a2d33;
+    --ink-3: #5a5d63;
+    --ink-4: #8a8d93;
+    --ink-5: #c0c3c8;
+    --hair: rgba(10, 10, 12, 0.08);
+    --hair-2: rgba(10, 10, 12, 0.14);
+    --hair-3: rgba(10, 10, 12, 0.22);
+    --panel: #ffffff;
+
+    /* Accent — slate (netral, profesional) */
+    --p-red: #4a5560;
+    --p-red-dark: #2a3540;
+    --p-red-soft: #e8eaed;
+    --p-navy: #2a3540;
+    --p-navy-dark: #1a2530;
+    --p-navy-soft: #e8eaed;
+    --p-gold: #6a737d;
+    --p-gold-dark: #4a5560;
+    --p-gold-soft: #eef0f2;
+
+    /* Status — distinct */
+    --s-uncut: #5a6b7a;        /* steel grey - belum */
+    --s-uncut-fill: #c8d0d8;
+    --s-uncut-soft: #eef1f4;
+    --s-uncut-ink: #2a3540;
+
+    --s-cut: #1e88c4;          /* vibrant blue - kontras tinggi vs hijau peta */
+    --s-cut-fill: #b8d9e8;
+    --s-cut-soft: #e0f0fa;
+    --s-cut-ink: #0a4570;
+
+    --s-warn: #c4801a;         /* warm amber */
+    --s-warn-fill: #f0d090;
+    --s-warn-soft: #fef3df;
+    --s-warn-ink: #6e4810;
+
+    --s-crit: #c41e25;         /* red kritis (status only) */
+    --s-crit-fill: #e88a90;
+    --s-crit-soft: #fde8ea;
+    --s-crit-ink: #6e1015;
+
+    --accent: var(--ink);
+    --accent-2: var(--ink-2);
+
+    --sh-1: 0 1px 2px rgba(26,24,23,0.04);
+    --sh-2: 0 1px 3px rgba(26,24,23,0.05), 0 2px 6px rgba(26,24,23,0.03);
+    --sh-3: 0 4px 12px rgba(26,24,23,0.06), 0 2px 4px rgba(26,24,23,0.03);
+    --sh-4: 0 12px 40px rgba(26,24,23,0.10), 0 4px 8px rgba(26,24,23,0.04);
+    --sh-5: 0 24px 80px rgba(26,24,23,0.14), 0 8px 16px rgba(26,24,23,0.05);
+
+    --r-xs: 4px; --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px; --r-2xl: 24px;
+
+    --ease-1: cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-spring: cubic-bezier(0.34, 1.35, 0.64, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* === DARK MODE === */
+  html[data-theme="dark"] {
+    --paper: #18171a;
+    --paper-2: #222125;
+    --paper-3: #2b292e;
+    --ink: #f5f3ee;
+    --ink-2: #d4cfc4;
+    --ink-3: #a8a39a;
+    --ink-4: #6b675f;
+    --ink-5: #3a3833;
+    --hair: rgba(245, 243, 238, 0.08);
+    --hair-2: rgba(245, 243, 238, 0.14);
+    --hair-3: rgba(245, 243, 238, 0.22);
+    --panel: #1f1e22;
+
+    --s-uncut: #8ba070; --s-uncut-soft: rgba(139,160,112,0.15); --s-uncut-ink: #b5c397;
+    --s-cut: #a8bc7f; --s-cut-soft: rgba(168,188,127,0.15); --s-cut-ink: #d2dbb1;
+    --s-warn: #d6a755; --s-warn-soft: rgba(214,167,85,0.15); --s-warn-ink: #e8d4a3;
+    --s-crit: #c4664e; --s-crit-soft: rgba(196,102,78,0.15); --s-crit-ink: #d7a896;
+
+    --sh-1: 0 1px 2px rgba(0,0,0,0.4);
+    --sh-2: 0 1px 3px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
+    --sh-3: 0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3);
+    --sh-4: 0 12px 40px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.4);
+    --sh-5: 0 24px 80px rgba(0,0,0,0.7), 0 8px 16px rgba(0,0,0,0.4);
+  }
+  html[data-theme="dark"] body::before {
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(40,38,42,0.7), transparent 70%),
+      radial-gradient(ellipse 80% 50% at 80% 100%, rgba(45,74,92,0.08), transparent 60%);
+  }
+  html[data-theme="dark"] body::before {
+    opacity: 0.5;
+  }
+
+  /* Theme toggle button */
+  .theme-toggle {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--hair-2);
+    background: var(--panel);
+    cursor: pointer;
+    display: grid; place-items: center;
+    color: var(--ink-2);
+    transition: all 0.25s var(--ease-1);
+    margin-left: 8px;
+  }
+  .theme-toggle:hover {
+    background: var(--paper-2);
+    border-color: var(--hair-3);
+    color: var(--ink);
+    transform: rotate(15deg);
+  }
+  .theme-toggle svg { width: 16px; height: 16px; }
+  .theme-toggle:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .theme-toggle:disabled:hover {
+    background: var(--panel);
+    border-color: var(--hair-2);
+    color: var(--ink-2);
+    transform: none;
+  }
+  .theme-toggle .icon-sun { display: none; }
+  .theme-toggle .icon-moon { display: block; }
+  html[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+  html[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+  /* === SMART BANNER === */
+  .smart-banner {
+    max-width: 1680px;
+    margin: 0 auto;
+    padding: 0 40px;
+    margin-top: 16px;
+    position: relative; z-index: 1;
+  }
+  .smart-banner-inner {
+    background: linear-gradient(135deg, var(--s-crit-soft), rgba(184,146,63,0.12));
+    border: 1px solid var(--s-crit);
+    border-radius: var(--r-lg);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: var(--sh-1);
+  }
+  .smart-banner.warn .smart-banner-inner {
+    background: linear-gradient(135deg, var(--s-warn-soft), rgba(184,146,63,0.08));
+    border-color: var(--s-warn);
+  }
+  .smart-banner.info .smart-banner-inner {
+    background: linear-gradient(135deg, var(--s-cut-soft), rgba(138,156,106,0.08));
+    border-color: var(--s-cut);
+  }
+  .smart-banner .b-icon {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--s-crit);
+    color: white;
+    display: grid; place-items: center;
+  }
+  .smart-banner.warn .b-icon { background: var(--s-warn); }
+  .smart-banner.info .b-icon { background: var(--s-cut); }
+  .smart-banner .b-icon svg { width: 16px; height: 16px; }
+  .smart-banner .b-text {
+    flex: 1;
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.45;
+  }
+  .smart-banner .b-text strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .smart-banner .b-text .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: var(--s-crit-ink);
+  }
+  .smart-banner.warn .b-text .num { color: var(--s-warn-ink); }
+  .smart-banner .b-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .smart-banner .b-actions .btn { padding: 7px 13px; font-size: 12px; }
+  .smart-banner .b-close {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: grid; place-items: center;
+    color: var(--ink-3);
+    transition: all 0.15s var(--ease-1);
+    flex-shrink: 0;
+  }
+  .smart-banner .b-close:hover { background: rgba(0,0,0,0.05); color: var(--ink); }
+
+  /* === Bulk select === */
+  .bulk-bar {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 16px;
+    border-radius: var(--r-md);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: var(--sh-3);
+    animation: slideIn 0.3s var(--ease-out);
+  }
+  @keyframes slideIn {
+    from { transform: translateY(-8px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .bulk-bar .b-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--paper);
+    font-weight: 500;
+    flex: 1;
+  }
+  .bulk-bar .b-count strong {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 400;
+    margin-right: 4px;
+  }
+  .bulk-bar button {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--paper);
+    padding: 6px 12px;
+    border-radius: var(--r-sm);
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s var(--ease-1);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .bulk-bar button:hover {
+    background: rgba(255,255,255,0.2);
+  }
+  .bulk-bar button.primary {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--paper);
+  }
+  .bulk-bar button svg { width: 12px; height: 12px; }
+
+  /* Checkbox in list */
+  .item-row {
+    grid-template-columns: auto auto 1fr auto auto !important;
+  }
+  .item-row .checkbox {
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--ink-4);
+    border-radius: 4px;
+    display: inline-grid;
+    place-items: center;
+    cursor: pointer;
+    transition: all 0.15s var(--ease-1);
+    flex-shrink: 0;
+  }
+  .item-row .checkbox:hover { border-color: var(--ink-2); }
+  .item-row .checkbox.checked {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+  .item-row .checkbox.checked::after {
+    content: '';
+    width: 8px; height: 5px;
+    border-left: 1.5px solid var(--paper);
+    border-bottom: 1.5px solid var(--paper);
+    transform: rotate(-45deg) translate(1px, -1px);
+  }
+
+  /* === Keyboard shortcuts help === */
+  .modal.help { max-width: 520px; }
+  .shortcuts-list { display: grid; gap: 10px; }
+  .shortcut-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px;
+    background: var(--paper-2);
+    border-radius: var(--r-md);
+  }
+  .shortcut-row .desc {
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .shortcut-row kbd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--panel);
+    border: 1px solid var(--hair-2);
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: var(--ink);
+    box-shadow: 0 1px 0 var(--hair-2);
+    font-weight: 500;
+  }
+  .shortcut-row kbd + kbd { margin-left: 4px; }
+
+  /* === Undo Toast === */
+  .toast .undo-btn {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: var(--paper);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background 0.15s var(--ease-1);
+  }
+  .toast .undo-btn:hover { background: rgba(255,255,255,0.25); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *::selection { background: rgba(45,74,92,0.18); }
+
+  html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--paper); color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'ss01', 'cv11', 'tnum';
+    letter-spacing: -0.011em;
+    line-height: 1.5;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      linear-gradient(180deg, #f5f5f7 0%, #ffffff 100%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 0% 0%, rgba(0,51,102,0.025), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(226,6,19,0.015), transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* === TOPBAR === */
+  .topbar {
+    background: rgba(251, 250, 247, 0.78);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom: 1px solid var(--hair);
+    padding: 20px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .brand { display: flex; align-items: center; gap: 16px; }
+  .brand-mark {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    background: var(--ink);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+    box-shadow: var(--sh-2);
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-mark svg { width: 18px; height: 18px; stroke: white; display: block; }
+
+  /* === SYNC STATUS INDICATOR === */
+  /* === SYNC BADGE — pengganti tombol help, lebih prominent === */
+  .sync-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 13px 8px 11px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: all 0.25s var(--ease-1);
+    border: 1px solid transparent;
+    margin-left: 8px;
+    cursor: default;
+    user-select: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .sync-badge .sync-badge-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: background 0.25s var(--ease-1);
+  }
+  .sync-badge .sync-badge-text {
+    font-size: 11.5px;
+  }
+  /* States */
+  .sync-badge.sync-online {
+    background: #e3f1e8;
+    color: #1d7547;
+    border-color: rgba(29,117,71,0.25);
+  }
+  .sync-badge.sync-online .sync-badge-dot {
+    background: #1d7547;
+    box-shadow: 0 0 0 3px rgba(29,117,71,0.18);
+    animation: sync-pulse 2.5s ease-in-out infinite;
+  }
+  .sync-badge.sync-syncing {
+    background: #e0f0fa;
+    color: #0a4570;
+    border-color: rgba(30,136,196,0.28);
+  }
+  .sync-badge.sync-syncing .sync-badge-dot {
+    background: #1e88c4;
+    animation: sync-spin 1.2s linear infinite;
+    box-shadow: 0 0 0 3px rgba(30,136,196,0.18);
+  }
+  .sync-badge.sync-offline {
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border-color: var(--hair-2);
+  }
+  .sync-badge.sync-offline .sync-badge-dot {
+    background: var(--ink-4);
+  }
+  .sync-badge.sync-loading {
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border-color: var(--hair-2);
+  }
+  .sync-badge.sync-loading .sync-badge-dot {
+    background: var(--ink-4);
+    animation: sync-pulse 1.5s ease-in-out infinite;
+  }
+  .sync-badge.sync-error {
+    background: #fde8ea;
+    color: #6e1015;
+    border-color: rgba(196,30,37,0.3);
+  }
+  .sync-badge.sync-error .sync-badge-dot {
+    background: #c41e25;
+  }
+
+  /* === Old syncStatus (kept for compat) === */
+  .sync-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px 2px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: all 0.25s var(--ease-1);
+    border: 1px solid transparent;
+  }
+  .sync-status .sync-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: background 0.25s var(--ease-1);
+  }
+  .sync-status .sync-text {
+    font-size: 10px;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  /* States */
+  .sync-status.sync-online {
+    background: #e3f1e8;
+    color: #1d7547;
+    border-color: rgba(29,117,71,0.15);
+  }
+  .sync-status.sync-online .sync-dot {
+    background: #1d7547;
+    box-shadow: 0 0 0 3px rgba(29,117,71,0.18);
+    animation: sync-pulse 2.5s ease-in-out infinite;
+  }
+  .sync-status.sync-syncing {
+    background: #e0f0fa;
+    color: #0a4570;
+    border-color: rgba(30,136,196,0.18);
+  }
+  .sync-status.sync-syncing .sync-dot {
+    background: #1e88c4;
+    animation: sync-spin 1.2s linear infinite;
+    box-shadow: 0 0 0 3px rgba(30,136,196,0.18);
+  }
+  .sync-status.sync-offline {
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border-color: var(--hair-2);
+  }
+  .sync-status.sync-offline .sync-dot {
+    background: var(--ink-4);
+  }
+  .sync-status.sync-loading {
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border-color: var(--hair-2);
+  }
+  .sync-status.sync-loading .sync-dot {
+    background: var(--ink-4);
+    animation: sync-pulse 1.5s ease-in-out infinite;
+  }
+  .sync-status.sync-error {
+    background: #fde8ea;
+    color: #6e1015;
+    border-color: rgba(196,30,37,0.2);
+  }
+  .sync-status.sync-error .sync-dot {
+    background: #c41e25;
+  }
+  @keyframes sync-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.85); }
+  }
+  @keyframes sync-spin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.15); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  .brand h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 400;
+    font-variation-settings: 'opsz' 24;
+    letter-spacing: -0.022em;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .brand .subtitle {
+    font-size: 10.5px;
+    color: var(--ink-3);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .stats-bar { display: flex; gap: 36px; align-items: stretch; }
+  .stat {
+    display: flex; flex-direction: column; gap: 4px;
+    min-width: 60px;
+    position: relative;
+  }
+  .stat + .stat::before {
+    content: '';
+    position: absolute;
+    left: -18px; top: 6px; bottom: 6px;
+    width: 1px;
+    background: var(--hair);
+  }
+  .stat .label {
+    font-size: 10px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+  .stat .value {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 400;
+    font-variation-settings: 'opsz' 36;
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+  }
+  .stat.cut .value { color: var(--s-cut-ink); }
+  .stat.warn .value { color: var(--s-warn-ink); }
+  .stat.crit .value { color: var(--s-crit-ink); }
+
+  /* === MAIN === */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 24px;
+    padding: 24px 40px 48px;
+    max-width: 1680px;
+    margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+
+  /* === MAP CARD === */
+  .map-card {
+    background: var(--panel);
+    border: 1px solid var(--hair);
+    border-radius: var(--r-2xl);
+    box-shadow: var(--sh-2);
+    overflow: hidden;
+  }
+
+  /* === Category tabs (Apple segmented control) === */
+  .cat-tabs {
+    display: flex;
+    padding: 12px;
+    gap: 4px;
+    border-bottom: 1px solid var(--hair);
+    background: linear-gradient(180deg, var(--paper-2), transparent);
+  }
+  .cat-tab {
+    flex: 1;
+    padding: 10px 14px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-3);
+    transition: all 0.28s var(--ease-1);
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px;
+    position: relative;
+    border-radius: var(--r-md);
+    letter-spacing: -0.005em;
+  }
+  .cat-tab:hover { color: var(--ink-2); background: rgba(0,0,0,0.025); }
+  .cat-tab.active {
+    color: var(--ink);
+    background: var(--panel);
+    box-shadow: var(--sh-2);
+  }
+  .cat-tab .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    background: var(--paper-3);
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-weight: 500;
+    transition: all 0.28s var(--ease-1);
+  }
+  .cat-tab.active .badge { background: var(--ink); color: var(--paper); }
+
+  .map-toolbar {
+    padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--hair);
+    background: var(--paper);
+  }
+  .legend { display: flex; gap: 22px; flex-wrap: wrap; font-size: 11.5px; color: var(--ink-2); align-items: center; }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-swatch {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 1.5px rgba(255,255,255,0.8), 0 0 0 2.5px var(--hair-3);
+  }
+  .toolbar-actions { display: flex; gap: 8px; }
+
+  /* === MAP CANVAS === */
+  .map-wrap {
+    position: relative;
+    background: var(--paper);
+  }
+  .map-canvas {
+    height: 640px;
+    overflow: auto;
+    background: #fafbfc;
+    background-image:
+      linear-gradient(rgba(10,10,12,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(10,10,12,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    cursor: grab;
+    position: relative;
+  }
+  .map-canvas:active { cursor: grabbing; }
+
+  /* Zoom controls (Apple Maps style) */
+  .zoom-controls {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--panel-blur, rgba(255,255,255,0.85));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--hair);
+    border-radius: var(--r-md);
+    box-shadow: var(--sh-2);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    z-index: 10;
+  }
+  .zoom-btn {
+    width: 32px; height: 32px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: grid; place-items: center;
+    color: var(--ink-2);
+    transition: all 0.2s var(--ease-1);
+  }
+  .zoom-btn:hover { background: var(--paper-2); color: var(--ink); }
+  .zoom-btn + .zoom-btn { border-top: 1px solid var(--hair); }
+  .zoom-btn svg { width: 14px; height: 14px; }
+
+  svg.iso-map {
+    display: block;
+    margin: auto;
+    user-select: none;
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  /* === Tile interactions - corporate restrained === */
+  .zone, .street, .parit-tag { cursor: pointer; }
+  .zone .zone-top, .street .zone-top {
+    transition: transform 0.25s var(--ease-1), filter 0.2s var(--ease-1);
+  }
+  .zone:hover .zone-top, .street:hover .zone-top {
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+  }
+  .zone.selected .zone-top, .street.selected .zone-top {
+    transform: translateY(-3px);
+    filter: brightness(1.05);
+  }
+
+  .parit-tag {
+    transition: transform 0.25s var(--ease-1);
+  }
+  .parit-tag:hover { transform: translateY(-1.5px); }
+  .parit-tag.selected .tag-card { stroke: var(--p-navy); stroke-width: 1.8; }
+
+  /* Confetti pieces - HAPUS untuk corporate */
+  .confetti-piece { display: none; }
+
+  /* === Label always visible === */
+  .tile-label {
+    pointer-events: none;
+    transition: opacity 0.3s var(--ease-1);
+  }
+
+  /* === Map info strip === */
+  .map-info {
+    padding: 14px 24px;
+    border-top: 1px solid var(--hair);
+    background: var(--paper);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px;
+    min-height: 52px;
+  }
+  .map-info .info-left {
+    flex: 1;
+    display: flex; align-items: center; gap: 12px;
+    min-width: 0;
+  }
+  .map-info .info-name {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .map-info .info-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .map-info .info-divider {
+    width: 1px; height: 16px;
+    background: var(--hair-2);
+    flex-shrink: 0;
+  }
+  .map-info .info-status {
+    font-size: 11.5px;
+    color: var(--ink-2);
+    display: flex; align-items: center; gap: 7px;
+    flex-shrink: 0;
+  }
+  .map-info .info-status .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.7);
+  }
+  .map-info.empty .info-name { color: var(--ink-4); font-style: italic; font-weight: 400; }
+
+  /* === SIDEBAR === */
+  .side {
+    display: flex; flex-direction: column; gap: 16px;
+    align-self: start;
+    position: sticky; top: 100px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--hair);
+    border-radius: var(--r-2xl);
+    box-shadow: var(--sh-2);
+    overflow: hidden;
+  }
+  .panel-head {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--hair);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .panel-head .title {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+  }
+  .panel-head .meta {
+    font-size: 10px;
+    color: var(--ink-4);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .panel-body { padding: 20px 22px 22px; }
+
+  .empty {
+    text-align: center; padding: 56px 20px 48px;
+    color: var(--ink-3);
+  }
+  .empty .icon {
+    width: 32px; height: 32px;
+    margin: 0 auto 14px;
+    opacity: 0.3;
+    stroke: var(--ink);
+  }
+  .empty p {
+    font-size: 12.5px;
+    color: var(--ink-3);
+    line-height: 1.65;
+  }
+
+  /* Detail */
+  .detail .code {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    background: var(--paper-2);
+    padding: 4px 9px;
+    border-radius: 5px;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .detail h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 400;
+    font-variation-settings: 'opsz' 36;
+    line-height: 1.22;
+    margin-bottom: 18px;
+    letter-spacing: -0.022em;
+    color: var(--ink);
+  }
+
+  .status-line {
+    padding: 11px 14px;
+    border-radius: var(--r-md);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .status-line .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.7);
+  }
+  .status-line.uncut { background: var(--s-uncut-soft); color: var(--s-uncut-ink); }
+  .status-line.uncut .dot { background: var(--s-uncut); }
+  .status-line.cut { background: var(--s-cut-soft); color: var(--s-cut-ink); }
+  .status-line.cut .dot { background: var(--s-cut); }
+  .status-line.warning { background: var(--s-warn-soft); color: var(--s-warn-ink); }
+  .status-line.warning .dot { background: var(--s-warn); }
+  .status-line.critical { background: var(--s-crit-soft); color: var(--s-crit-ink); }
+  .status-line.critical .dot { background: var(--s-crit); }
+
+  .info-rows { margin-bottom: 20px; }
+  .info-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--hair);
+    gap: 12px;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .key {
+    font-size: 12px;
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+  .info-row .val {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+    text-align: right;
+    letter-spacing: -0.01em;
+  }
+  .info-row .val.text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink-2);
+    font-size: 12px;
+  }
+
+  /* === BUTTONS === */
+  .actions { display: flex; gap: 8px; }
+  .btn {
+    flex: 1;
+    padding: 11px 14px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-md);
+    background: var(--panel);
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 12.5px;
+    cursor: pointer;
+    color: var(--ink-2);
+    transition: all 0.2s var(--ease-1);
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 7px;
+    letter-spacing: -0.005em;
+  }
+  .btn:hover {
+    background: var(--paper-2);
+    border-color: var(--hair-3);
+    color: var(--ink);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn svg { width: 13px; height: 13px; opacity: 0.75; }
+  .btn:hover svg { opacity: 1; }
+  .btn.primary {
+    background: var(--p-navy); color: white; border-color: var(--p-navy);
+    box-shadow: var(--sh-1);
+  }
+  .btn.primary:hover { background: var(--p-navy-dark); border-color: var(--p-navy-dark); }
+  .btn.danger { color: var(--p-red); border-color: var(--p-red); }
+  .btn.danger:hover { background: var(--s-crit-soft); border-color: var(--p-red-dark); color: var(--p-red-dark); }
+  .btn.icon { flex: 0 0 auto; width: 38px; padding: 0; }
+  .btn.sm { padding: 7px 12px; font-size: 11.5px; }
+
+  /* History */
+  details.hist {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hair);
+  }
+  details.hist > summary {
+    cursor: pointer;
+    font-size: 10.5px;
+    color: var(--ink-3);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    list-style: none;
+    display: flex; align-items: center; gap: 8px;
+    user-select: none;
+    transition: color 0.2s var(--ease-1);
+  }
+  details.hist > summary:hover { color: var(--ink); }
+  details.hist > summary::-webkit-details-marker { display: none; }
+  details.hist > summary::before {
+    content: '';
+    width: 4px; height: 4px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.25s var(--ease-1);
+  }
+  details.hist[open] > summary::before { transform: rotate(45deg); }
+  .hist-list { margin-top: 12px; max-height: 200px; overflow-y: auto; padding-right: 4px; }
+  .hist-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--hair);
+    font-size: 12px;
+  }
+  .hist-item:last-child { border-bottom: none; }
+  .hist-item .head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .hist-item .when {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-3);
+  }
+  .hist-item .note {
+    color: var(--ink-3);
+    font-size: 11px;
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  /* Group items */
+  .group-items { margin-top: 10px; }
+  .group-item {
+    padding: 10px 12px;
+    border-radius: var(--r-md);
+    margin-bottom: 2px;
+    cursor: pointer;
+    transition: background 0.18s var(--ease-1);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .group-item:hover { background: var(--paper-2); }
+  .group-item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.7);
+  }
+  .group-item .name {
+    flex: 1;
+    font-size: 12px;
+    color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .group-item .vol {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-3);
+  }
+
+  /* === FILTER PILLS (iOS segmented) === */
+  .filter-pills {
+    display: flex; gap: 3px;
+    margin-bottom: 16px;
+    padding: 3px;
+    background: var(--paper-3);
+    border-radius: 999px;
+  }
+  .filter-pill {
+    flex: 1;
+    padding: 7px 10px;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-3);
+    cursor: pointer;
+    border-radius: 999px;
+    transition: all 0.25s var(--ease-1);
+    letter-spacing: -0.005em;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+  }
+  .filter-pill:hover { color: var(--ink); }
+  .filter-pill.active {
+    background: var(--panel);
+    color: var(--ink);
+    box-shadow: var(--sh-1);
+  }
+  .filter-pill .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    opacity: 0.6;
+  }
+  .filter-pill.active .count { opacity: 0.8; }
+
+  /* Item list */
+  .item-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin: 0 -6px;
+    padding: 0 6px 0 6px;
+  }
+  .item-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 11px;
+    align-items: center;
+    padding: 9px 10px;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    margin-bottom: 1px;
+    transition: background 0.18s var(--ease-1);
+  }
+  .item-row:hover { background: var(--paper-2); }
+  .item-row.active { background: var(--paper-3); }
+  .item-row .code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    width: 40px;
+    font-weight: 500;
+  }
+  .item-row .name {
+    font-size: 12.5px;
+    color: var(--ink-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 400;
+  }
+  .item-row.active .name { color: var(--ink); font-weight: 500; }
+  .item-row .vol {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-4);
+  }
+  .item-row .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.7);
+  }
+
+  /* === MODAL === */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(26,24,23,0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-1);
+    padding: 20px;
+  }
+  .modal-bg.active { display: flex; opacity: 1; }
+  .modal {
+    background: var(--panel);
+    border-radius: var(--r-2xl);
+    box-shadow: var(--sh-5);
+    width: 100%; max-width: 460px;
+    overflow: hidden;
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.4s var(--ease-spring);
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-bg.active .modal { transform: translateY(0) scale(1); }
+  .modal-head {
+    padding: 22px 26px 6px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .modal-head h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 400;
+    letter-spacing: -0.022em;
+    color: var(--ink);
+  }
+  .modal-close {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: var(--paper-2);
+    cursor: pointer;
+    display: grid; place-items: center;
+    color: var(--ink-3);
+    transition: all 0.2s var(--ease-1);
+    margin: -4px -8px 0 0;
+  }
+  .modal-close:hover { background: var(--ink); color: var(--paper); }
+  .modal-body { padding: 14px 26px 26px; }
+  .modal .preview {
+    padding: 14px 16px;
+    background: var(--paper-2);
+    border-radius: var(--r-md);
+    margin-bottom: 22px;
+  }
+  .modal .preview .p-cat {
+    font-size: 10px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+  .modal .preview .p-name {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+  }
+  .modal .preview .p-vol {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-top: 6px;
+  }
+
+  /* === REPORT MODAL (tabel pelaporan HSSE) === */
+  .modal.report {
+    max-width: 1000px;
+  }
+  .report-body {
+    padding: 0 32px 32px;
+  }
+  /* === KOP SURAT FORMAL === */
+  .report-header {
+    margin-bottom: 24px;
+  }
+  .kop {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 20px;
+    align-items: start;
+    padding: 0 0 16px;
+    border-bottom: 3px double var(--ink);
+  }
+  .kop-mark {
+    width: 60px; height: 60px;
+    border-radius: 10px;
+    background: var(--ink);
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(10,10,12,0.18);
+    flex-shrink: 0;
+  }
+  .kop-text {
+    min-width: 0;
+  }
+  .kop-company {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+  }
+  .kop-field {
+    font-family: 'Inter', sans-serif;
+    font-size: 11.5px;
+    color: var(--ink-3);
+    font-weight: 500;
+    margin-top: 2px;
+    letter-spacing: 0.01em;
+  }
+  .kop-divider {
+    height: 1px;
+    background: var(--hair-2);
+    margin: 8px 0;
+  }
+  .kop-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .kop-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-top: 2px;
+    letter-spacing: 0.02em;
+    font-weight: 500;
+  }
+  .kop-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 220px;
+    padding-left: 16px;
+    border-left: 1px solid var(--hair-2);
+  }
+  .kop-meta-row {
+    display: flex; justify-content: space-between; gap: 12px;
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+  .kop-meta-row .k {
+    color: var(--ink-3);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .kop-meta-row .v {
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  /* Old report-meta (kept for backward compat, hidden) */
+  .report-meta {
+    display: none;
+  }
+
+  /* Filter row */
+  .report-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .report-filters .f-label {
+    font-size: 11px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    margin-right: 4px;
+  }
+  .report-filters select {
+    padding: 7px 32px 7px 12px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-md);
+    font-family: inherit;
+    font-size: 12.5px;
+    background: var(--panel);
+    color: var(--ink);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b675f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    transition: border-color 0.2s var(--ease-1);
+  }
+  .report-filters select:hover { border-color: var(--hair-3); }
+  .report-filters select:focus { outline: none; border-color: var(--ink); }
+
+  .report-summary-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--hair);
+    border: 1px solid var(--hair);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .strip-cell {
+    background: var(--panel);
+    padding: 12px 16px;
+  }
+  .strip-cell .s-label {
+    font-size: 9.5px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+  .strip-cell .s-value {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-top: 4px;
+    letter-spacing: -0.022em;
+    line-height: 1;
+  }
+  .strip-cell.cut .s-value { color: var(--s-cut-ink); }
+  .strip-cell.warn .s-value { color: var(--s-warn-ink); }
+  .strip-cell.crit .s-value { color: var(--s-crit-ink); }
+  .strip-cell.uncut .s-value { color: var(--ink-3); }
+
+  /* The actual data table */
+  .data-table-wrap {
+    border: 1px solid var(--hair);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .data-table thead {
+    background: var(--paper-2);
+  }
+  .data-table th {
+    text-align: left;
+    padding: 11px 14px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--hair-2);
+    white-space: nowrap;
+  }
+  .data-table th.num, .data-table td.num {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .data-table th.center, .data-table td.center {
+    text-align: center;
+  }
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--hair);
+    color: var(--ink-2);
+    vertical-align: top;
+  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover { background: var(--paper-2); }
+
+  .data-table .row-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .data-table .row-name {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .data-table .row-cat {
+    font-size: 10px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .data-table .row-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .data-table .row-date.muted { color: var(--ink-4); font-style: italic; font-family: 'Inter', sans-serif; font-size: 11.5px; }
+  .data-table .row-vol {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-2);
+  }
+  .data-table .row-workers {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-3);
+  }
+  .data-table .row-note {
+    font-style: italic;
+    color: var(--ink-3);
+    font-size: 11px;
+    max-width: 200px;
+  }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+  }
+  .status-chip .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+  }
+  .status-chip.uncut { background: var(--s-uncut-soft); color: var(--s-uncut-ink); }
+  .status-chip.uncut .dot { background: var(--s-uncut); }
+  .status-chip.cut { background: var(--s-cut-soft); color: var(--s-cut-ink); }
+  .status-chip.cut .dot { background: var(--s-cut); }
+  .status-chip.warning { background: var(--s-warn-soft); color: var(--s-warn-ink); }
+  .status-chip.warning .dot { background: var(--s-warn); }
+  .status-chip.critical { background: var(--s-crit-soft); color: var(--s-crit-ink); }
+  .status-chip.critical .dot { background: var(--s-crit); }
+
+  .table-foot {
+    padding: 10px 14px;
+    background: var(--paper-2);
+    font-size: 11px;
+    color: var(--ink-3);
+    border-top: 1px solid var(--hair);
+    display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  .empty-row {
+    padding: 40px 16px;
+    text-align: center;
+    color: var(--ink-4);
+    font-style: italic;
+    font-size: 12.5px;
+  }
+
+  /* Search & sort */
+  .report-toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+  .search-input input {
+    width: 100%;
+    padding: 8px 12px 8px 34px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-md);
+    font-family: inherit;
+    font-size: 12.5px;
+    background: var(--panel);
+    color: var(--ink);
+    transition: border-color 0.2s var(--ease-1);
+  }
+  .search-input input:focus {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px rgba(26,24,23,0.06);
+  }
+  .search-input svg {
+    position: absolute;
+    left: 11px; top: 50%;
+    transform: translateY(-50%);
+    width: 14px; height: 14px;
+    color: var(--ink-3);
+    pointer-events: none;
+  }
+
+  /* Quick presets */
+  .preset-row {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .preset-btn {
+    padding: 5px 11px;
+    border: 1px solid var(--hair-2);
+    border-radius: 999px;
+    background: var(--panel);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: all 0.2s var(--ease-1);
+    letter-spacing: -0.005em;
+  }
+  .preset-btn:hover { background: var(--paper-2); border-color: var(--hair-3); }
+  .preset-btn.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .preset-btn .pcount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    margin-left: 4px;
+    opacity: 0.65;
+  }
+
+  /* Sortable headers */
+  .data-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 22px;
+    transition: color 0.15s;
+  }
+  .data-table th.sortable:hover { color: var(--ink); }
+  .data-table th.sortable::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0; height: 0;
+    border-left: 3.5px solid transparent;
+    border-right: 3.5px solid transparent;
+    opacity: 0.35;
+  }
+  .data-table th.sortable.asc::after {
+    border-bottom: 4px solid currentColor;
+    opacity: 1;
+  }
+  .data-table th.sortable.desc::after {
+    border-top: 4px solid currentColor;
+    opacity: 1;
+  }
+
+  /* Group header row */
+  .data-table tr.group-row {
+    background: var(--paper-2);
+  }
+  .data-table tr.group-row td {
+    padding: 8px 14px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--hair-2);
+    border-top: 1px solid var(--hair-2);
+  }
+  .data-table tr.group-row td .g-count {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-3);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0.04em;
+    margin-left: 8px;
+  }
+
+  /* Signature block (print-only) */
+  .signature-block {
+    display: none;
+  }
+
+  /* === PRINT — proper page handling === */
+  @media print {
+    /* Hide everything */
+    html, body { background: white !important; }
+    body * { visibility: hidden; }
+    body::before, body::after { display: none !important; }
+
+    /* Make modal flow as document */
+    .modal-bg.active, .modal-bg.active * { visibility: visible; }
+    .modal-bg.active {
+      position: static !important;
+      display: block !important;
+      background: white !important;
+      backdrop-filter: none !important;
+      padding: 0 !important;
+      opacity: 1 !important;
+      overflow: visible !important;
+      width: 100% !important;
+      max-width: none !important;
+    }
+    .modal.report {
+      position: static !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      box-shadow: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      transform: none !important;
+      max-height: none !important;
+      overflow: visible !important;
+      display: block !important;
+    }
+
+    /* Modal head HIDDEN saat print - kop sudah punya title sendiri */
+    .modal-head {
+      display: none !important;
+    }
+
+    /* Hide interactive controls */
+    .modal-close,
+    .modal-foot,
+    .report-filters,
+    .report-toolbar,
+    .preset-row {
+      display: none !important;
+    }
+
+    /* Kop visible saat print - lebih tegas */
+    .report-header {
+      page-break-inside: avoid;
+      margin-bottom: 14px !important;
+    }
+    .kop {
+      padding: 0 0 12px !important;
+    }
+    .kop-mark {
+      box-shadow: none !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Compact report body */
+    .report-body {
+      padding: 0 !important;
+    }
+    .report-meta {
+      padding: 0 0 10px !important;
+      margin-bottom: 14px !important;
+    }
+    .report-summary-strip {
+      margin-bottom: 14px !important;
+      page-break-inside: avoid;
+    }
+    .strip-cell {
+      padding: 8px 10px !important;
+    }
+    .strip-cell .s-value {
+      font-size: 18px !important;
+    }
+
+    /* === TABLE === */
+    .data-table-wrap {
+      border: 1px solid #000 !important;
+      border-radius: 0 !important;
+      overflow: visible !important;
+      page-break-inside: auto;
+    }
+    .data-table {
+      font-size: 9.5px !important;
+      page-break-inside: auto;
+    }
+    /* CRITICAL: repeat thead on each page */
+    .data-table thead {
+      display: table-header-group !important;
+    }
+    .data-table tbody {
+      display: table-row-group !important;
+    }
+    .data-table tr {
+      page-break-inside: avoid !important;
+      page-break-after: auto;
+    }
+    .data-table th {
+      background: #ebe7dd !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      padding: 6px 8px !important;
+      font-size: 8.5px !important;
+      border-bottom: 1px solid #000 !important;
+    }
+    .data-table td {
+      padding: 5px 8px !important;
+      font-size: 9.5px !important;
+      border-bottom: 1px solid #d4cfc4 !important;
+    }
+    .data-table tbody tr:hover {
+      background: transparent !important;
+    }
+    .data-table tr.group-row {
+      background: #f5f3ee !important;
+      -webkit-print-color-adjust: exact;
+      page-break-after: avoid !important;
+    }
+    .data-table tr.group-row td {
+      padding: 5px 8px !important;
+      font-size: 9px !important;
+    }
+    .status-chip {
+      border: 1px solid currentColor;
+      background: white !important;
+      -webkit-print-color-adjust: exact;
+    }
+
+    /* Print color preservation */
+    .strip-cell.cut, .strip-cell.warn, .strip-cell.crit, .strip-cell.uncut,
+    .status-chip.cut, .status-chip.warning, .status-chip.critical, .status-chip.uncut {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Signature block — only on print */
+    .signature-block {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid var(--hair);
+      page-break-inside: avoid;
+    }
+    .sig-cell {
+      text-align: center;
+      font-size: 10px;
+    }
+    .sig-cell .role {
+      color: var(--ink-3);
+      margin-bottom: 60px;
+      font-weight: 500;
+    }
+    .sig-cell .line {
+      border-top: 1px solid var(--ink);
+      padding-top: 4px;
+      font-weight: 600;
+    }
+    .sig-cell .pos {
+      color: var(--ink-3);
+      font-style: italic;
+      margin-top: 2px;
+      font-size: 9px;
+    }
+
+    @page {
+      margin: 1.3cm 1.2cm 1.5cm 1.2cm;
+      size: A4 landscape;
+      @bottom-right {
+        content: "Halaman " counter(page) " / " counter(pages);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 9px;
+        color: #6b675f;
+      }
+      @bottom-left {
+        content: "Sangatta Field · Cleaning Outdoor Monitoring · Kontrak 4710001911";
+        font-family: 'Inter', sans-serif;
+        font-size: 9px;
+        color: #6b675f;
+      }
+    }
+  }
+
+  .modal label {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    margin-top: 18px;
+  }
+  .modal label:first-child { margin-top: 0; }
+  .modal input, .modal textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-md);
+    font-family: inherit;
+    font-size: 14px;
+    background: var(--panel);
+    color: var(--ink);
+    transition: border-color 0.2s var(--ease-1), box-shadow 0.2s var(--ease-1);
+    letter-spacing: -0.005em;
+  }
+  .modal input:focus, .modal textarea:focus {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 4px rgba(26,24,23,0.06);
+  }
+  .modal textarea { resize: vertical; min-height: 70px; }
+  .modal-foot {
+    padding: 18px 26px 22px;
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+  .modal-foot .btn { flex: 0 0 auto; padding: 10px 20px; }
+
+  /* === FX === */
+  @keyframes fx-rise {
+    0%   { transform: translate(-50%, -50%) scale(0.85); opacity: 0; }
+    25%  { transform: translate(-50%, -55%) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -130%) scale(1); opacity: 0; }
+  }
+  .fx {
+    position: absolute;
+    pointer-events: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--s-cut);
+    animation: fx-rise 1.2s var(--ease-out) forwards;
+    z-index: 999;
+    left: 50%; top: 50%;
+    letter-spacing: -0.015em;
+  }
+
+  /* === Toast === */
+  .toast {
+    position: fixed;
+    bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 20px 12px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 2000;
+    transition: transform 0.5s var(--ease-spring);
+    box-shadow: var(--sh-4);
+    display: flex; align-items: center; gap: 8px;
+    letter-spacing: -0.005em;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast svg { width: 14px; height: 14px; }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 1100px) {
+    .main { grid-template-columns: 1fr; padding: 16px; }
+    .topbar { padding: 14px 16px; }
+    .stats-bar { gap: 20px; }
+    .stat + .stat::before { left: -10px; }
+    .side { position: static; }
+    .brand h1 { font-size: 17px; }
+  }
+  @media (max-width: 720px) {
+    .stats-bar { display: none; }
+    .cat-tabs { padding: 8px; }
+    .cat-tab { padding: 9px 10px; font-size: 12px; }
+    .map-canvas { height: 480px; }
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--ink-5);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--ink-4); }
+</style>
+
+<!-- ===== FIREBASE SDK (Realtime Database) ===== -->
+<script type="module">
+  // Capture errors globally untuk diagnostic
+  window.__firebaseErrors = [];
+  const origConsoleError = console.error;
+  console.error = function(...args) {
+    const msg = args.map(a => {
+      if (a instanceof Error) return a.message;
+      if (typeof a === 'object') { try { return JSON.stringify(a); } catch { return String(a); } }
+      return String(a);
+    }).join(' ');
+    if (msg.toLowerCase().includes('firebase') || msg.toLowerCase().includes('database')) {
+      window.__firebaseErrors.push({ time: new Date().toISOString(), msg });
+      // Update badge if available
+      try {
+        const badge = document.getElementById('syncBadge');
+        if (badge && msg.includes('PERMISSION_DENIED')) {
+          badge.classList.remove('sync-loading','sync-online','sync-syncing','sync-offline');
+          badge.classList.add('sync-error');
+          badge.querySelector('.sync-badge-text').textContent = 'Permission ditolak';
+          badge.title = 'Rules Firebase belum mengizinkan akses. Cek tab Rules di Firebase Console.';
+        }
+      } catch (e) {}
+    }
+    origConsoleError.apply(console, args);
+  };
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getDatabase, ref, set, onValue, serverTimestamp, goOnline, goOffline
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  // ===========================================================
+  // GANTI BLOK INI DENGAN CONFIG DARI FIREBASE CONSOLE
+  // ===========================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyCFBqliB6pnV1W3PWE5Lig4U85jciQt5bc",
+    authDomain: "rintis-5ad97.firebaseapp.com",
+    databaseURL: "https://rintis-5ad97-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "rintis-5ad97",
+    storageBucket: "rintis-5ad97.firebasestorage.app",
+    messagingSenderId: "296016687991",
+    appId: "1:296016687991:web:a0414f809740d2b5a76772",
+    measurementId: "G-Q9VST2MQC7"
+  };
+  // ===========================================================
+
+  // Cek apakah config sudah diisi
+  const isConfigured = !firebaseConfig.apiKey.startsWith('REPLACE_');
+
+  if (isConfigured) {
+    try {
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+
+      // Expose ke global window agar bisa diakses oleh main script
+      window.__firebase = {
+        db, ref, set, onValue, serverTimestamp, goOnline, goOffline,
+        enabled: true
+      };
+    } catch (e) {
+      console.error('Firebase init error:', e);
+      window.__firebase = { enabled: false, error: e.message };
+    }
+  } else {
+    window.__firebase = { enabled: false, error: 'Config belum diisi' };
+    console.warn('Firebase belum dikonfigurasi. Mode offline-only (localStorage).');
+  }
+
+  // Sinyal ke main script bahwa Firebase siap dicek
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>
+      </svg>
+    </div>
+    <div>
+      <h1 style="font-family:'Inter',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.02em;color:var(--ink);line-height:1.1">SANGATTA FIELD MONITORING</h1>
+      <div class="subtitle" style="font-size:11px;color:var(--ink-3);font-weight:500;letter-spacing:0.04em;text-transform:none;margin-top:4px">Cleaning Outdoor · Kontrak No. 4710001911</div>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat cut"><span class="label">Selesai</span><span class="value" id="stat-cut">0</span></div>
+    <div class="stat warn"><span class="label">Aging</span><span class="value" id="stat-warn">0</span></div>
+    <div class="stat crit"><span class="label">Telat</span><span class="value" id="stat-crit">0</span></div>
+    <div class="stat"><span class="label">Total</span><span class="value" id="stat-total">0</span></div>
+    <button class="btn primary" onclick="openSummary()" style="margin-left:8px;align-self:center;flex:0 0 auto;padding:10px 18px;font-size:12.5px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+      Laporan HSSE
+    </button>
+    <button class="theme-toggle" id="undoBtnTop" onclick="undoLast()" title="Urungkan aksi terakhir (Ctrl+Z)" aria-label="Undo" disabled style="margin-left:8px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+    </button>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Ganti tema (T)" aria-label="Ganti tema" style="margin-left:0">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <div id="syncBadge" class="sync-badge sync-loading" title="Status Firebase">
+      <span class="sync-badge-dot"></span>
+      <span class="sync-badge-text">Memuat…</span>
+    </div>
+  </div>
+</header>
+
+<div id="smartBannerHost"></div>
+
+<main class="main">
+
+  <section class="map-card">
+
+    <div class="cat-tabs">
+      <button class="cat-tab active" data-cat="rintis">Perintisan Rumput <span class="badge" id="badge-rintis">21</span></button>
+      <button class="cat-tab" data-cat="sapu">Penyapuan Jalan <span class="badge" id="badge-sapu">16</span></button>
+      <button class="cat-tab" data-cat="parit">Pembersihan Parit <span class="badge" id="badge-parit">121</span></button>
+    </div>
+
+    <div class="map-toolbar">
+      <div class="legend" id="legend"></div>
+      <div class="toolbar-actions">
+        <button class="btn sm" onclick="markAllCurrent()">Tandai Semua</button>
+        <button class="btn sm danger" onclick="resetAllCurrent()">Reset</button>
+      </div>
+    </div>
+
+    <div class="map-wrap">
+      <div class="zoom-controls">
+        <button class="zoom-btn" onclick="zoomIn()" title="Perbesar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="zoom-btn" onclick="zoomOut()" title="Perkecil">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="zoom-btn" onclick="zoomReset()" title="Reset zoom">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </button>
+      </div>
+      <div class="map-canvas" id="mapCanvas">
+        <svg class="iso-map" id="isoMap" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+    </div>
+
+    <div class="map-info empty" id="mapInfo">
+      <div class="info-left">
+        <span class="info-name">Arahkan ke tile untuk melihat info</span>
+      </div>
+    </div>
+
+  </section>
+
+  <aside class="side">
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="title">Detail</span>
+        <span class="meta" id="last-updated"></span>
+      </div>
+      <div class="panel-body" id="detailPane">
+        <div class="empty">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <p>Pilih item di peta atau daftar<br>untuk melihat detail.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="title">Daftar Item</span>
+        <span class="meta" id="listTotal"></span>
+      </div>
+      <div class="panel-body">
+        <div id="bulkBar"></div>
+        <div class="filter-pills">
+          <button class="filter-pill active" data-filter="all">Semua<span class="count" id="cnt-all"></span></button>
+          <button class="filter-pill" data-filter="uncut">Belum<span class="count" id="cnt-uncut"></span></button>
+          <button class="filter-pill" data-filter="cut">Selesai<span class="count" id="cnt-cut"></span></button>
+          <button class="filter-pill" data-filter="warning">Aging<span class="count" id="cnt-warn"></span></button>
+          <button class="filter-pill" data-filter="critical">Telat<span class="count" id="cnt-crit"></span></button>
+        </div>
+        <div class="item-list" id="itemList"></div>
+      </div>
+    </div>
+
+  </aside>
+</main>
+
+<div class="modal-bg" id="modalSummary">
+  <div class="modal report">
+    <div class="modal-head">
+      <h3>Laporan Pekerjaan untuk HSSE</h3>
+      <button class="modal-close" onclick="closeModal()" aria-label="Tutup">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="report-body" id="summaryBody"></div>
+    <div class="modal-foot">
+      <button class="btn" onclick="copyTableCSV()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Salin Tabel
+      </button>
+      <button class="btn" onclick="downloadCSV()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Unduh CSV
+      </button>
+      <button class="btn primary" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Cetak / PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalHelp">
+  <div class="modal help">
+    <div class="modal-head">
+      <h3>Tips & Pintasan</h3>
+      <button class="modal-close" onclick="closeModal()" aria-label="Tutup">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--ink-3);margin-bottom:16px;line-height:1.6">Pintasan keyboard untuk pakai dashboard lebih cepat:</div>
+      <div class="shortcuts-list">
+        <div class="shortcut-row">
+          <span class="desc">Tutup modal yang sedang terbuka</span>
+          <span><kbd>Esc</kbd></span>
+        </div>
+        <div class="shortcut-row">
+          <span class="desc">Buka laporan HSSE</span>
+          <span><kbd>Shift</kbd><kbd>L</kbd></span>
+        </div>
+        <div class="shortcut-row">
+          <span class="desc">Switch kategori (Rintis / Sapu / Parit)</span>
+          <span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd></span>
+        </div>
+        <div class="shortcut-row">
+          <span class="desc">Ganti tema terang / gelap</span>
+          <span><kbd>T</kbd></span>
+        </div>
+        <div class="shortcut-row">
+          <span class="desc">Perbesar / perkecil peta</span>
+          <span><kbd>+</kbd><kbd>-</kbd></span>
+        </div>
+        <div class="shortcut-row">
+          <span class="desc">Buka bantuan (dialog ini)</span>
+          <span><kbd>?</kbd></span>
+        </div>
+      </div>
+      <div style="font-size:11.5px;color:var(--ink-3);margin-top:18px;padding:12px 14px;background:var(--paper-2);border-radius:var(--r-md);line-height:1.6">
+        <strong style="color:var(--ink)">Tips bulk action:</strong> Di daftar zona, klik kotak centang di kiri tiap item untuk pilih beberapa, lalu klik "Tandai Semua Selesai" di toolbar yang muncul di atas.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalMark">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Tandai Selesai</h3>
+      <button class="modal-close" onclick="closeModal()" aria-label="Tutup">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="preview">
+        <div class="p-cat" id="modalCat"></div>
+        <div class="p-name" id="modalName"></div>
+        <div class="p-vol" id="modalVol"></div>
+      </div>
+      <label>Tanggal Pengerjaan</label>
+      <input type="date" id="markDate">
+      <label>Jumlah Pekerja</label>
+      <input type="number" id="markWorkers" min="1" max="50" value="6">
+      <label>Catatan</label>
+      <textarea id="markNote" placeholder="Kondisi lapangan, kendala, dll (opsional)"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal()">Batal</button>
+      <button class="btn primary" onclick="confirmMark()">Konfirmasi</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalEdit">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Edit Item</h3>
+      <button class="modal-close" onclick="closeModal()" aria-label="Tutup">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <label>Nama</label>
+      <input type="text" id="editName">
+      <label>Volume</label>
+      <input type="number" id="editVol" step="0.01">
+      <label>Catatan</label>
+      <textarea id="editNote" placeholder="Catatan permanen untuk item ini"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal()">Batal</button>
+      <button class="btn primary" onclick="confirmEdit()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ DATA ============
+const RINTIS = [
+  { id:'A-01', no:1,  name:'Area Perumahan, Mess, Bumi Perkemahan AHPC dan Driving Range', short:'Area Perumahan', vol:159467, x:2,  y:2,  w:6, h:4, hasBuilding:true },
+  { id:'A-02', no:2,  name:'Kantor Baru',           short:'Kantor Baru',     vol:1167,  x:9,  y:2,  w:2, h:1, hasBuilding:true },
+  { id:'A-03', no:3,  name:'Kantor Lama',           short:'Kantor Lama',     vol:3555,  x:9,  y:4,  w:2, h:1, hasBuilding:true },
+  { id:'A-04', no:4,  name:'Kantor HSSE',           short:'Kantor HSSE',     vol:4264,  x:12, y:2,  w:2, h:1, hasBuilding:true },
+  { id:'A-05', no:5,  name:'RAM',                   short:'RAM',             vol:1116,  x:12, y:4,  w:1, h:1, hasBuilding:true },
+  { id:'A-06', no:6,  name:'Gudang Sipil',          short:'Gudang Sipil',    vol:1177,  x:14, y:4,  w:1, h:1, hasBuilding:true },
+  { id:'A-07', no:7,  name:'Jl. Minyak',            short:'Jl. Minyak',      vol:4447,  x:2,  y:7,  w:4, h:1, hasRoad:true },
+  { id:'A-08', no:8,  name:'Workshop KM.4',         short:'Workshop KM.4',   vol:2943,  x:7,  y:7,  w:2, h:1, hasBuilding:true },
+  { id:'A-09', no:9,  name:'Pipe Yard',             short:'Pipe Yard',       vol:4564,  x:10, y:7,  w:2, h:1, hasBuilding:true },
+  { id:'A-10', no:10, name:'Gudang Handak',         short:'Gudang Handak',   vol:7875,  x:13, y:7,  w:2, h:2, hasBuilding:true },
+  { id:'A-11', no:11, name:'Gudang Teluk Lombok',   short:'Gudang TL',       vol:5683,  x:2,  y:9,  w:2, h:2, hasBuilding:true },
+  { id:'A-12', no:12, name:'Gedung Infokom',        short:'Gd. Infokom',     vol:2822,  x:5,  y:9,  w:2, h:1, hasBuilding:true },
+  { id:'A-13', no:13, name:'Pump Shop & Tool Shop', short:'Pump Shop',       vol:5084,  x:8,  y:9,  w:2, h:2, hasBuilding:true },
+  { id:'A-14', no:14, name:'WTP',                   short:'WTP',             vol:3067,  x:11, y:10, w:1, h:1, hasBuilding:true },
+  { id:'A-15', no:15, name:'Power Plant',           short:'Power Plant',     vol:2313,  x:13, y:10, w:1, h:1, hasBuilding:true },
+  { id:'A-16', no:16, name:'Bor Maintenance',       short:'Bor Maint.',      vol:697,   x:15, y:9,  w:1, h:1, hasBuilding:true },
+  { id:'A-17', no:17, name:'WPS',                   short:'WPS',             vol:3259,  x:5,  y:11, w:2, h:1, hasBuilding:true },
+  { id:'A-18', no:18, name:'Pos Security Gapura',   short:'Pos Gapura',      vol:887,   x:8,  y:12, w:1, h:1, hasBuilding:true },
+  { id:'A-19', no:19, name:'Mess Coklat',           short:'Mess Coklat',     vol:191,   x:10, y:12, w:1, h:1, hasBuilding:true },
+  { id:'A-20', no:20, name:'Jalan Telkom',          short:'Jl. Telkom',      vol:858,   x:12, y:12, w:2, h:1, hasRoad:true },
+  { id:'A-21', no:21, name:'Pos Security 52',       short:'Pos 52',          vol:781,   x:15, y:12, w:1, h:1, hasBuilding:true },
+];
+
+const SAPU = [
+  { id:'B-01', no:1,  name:'Jl. Ulin',        vol:1015.32, row:0, col:0 },
+  { id:'B-02', no:2,  name:'Jl. Sonokeling',  vol:1013.74, row:0, col:1 },
+  { id:'B-03', no:3,  name:'Jl. Jati',        vol:1047.66, row:0, col:2 },
+  { id:'B-04', no:4,  name:'Jl. Bungur',      vol:314.58,  row:0, col:3 },
+  { id:'B-05', no:5,  name:'Jl. Suren',       vol:363.68,  row:1, col:0 },
+  { id:'B-06', no:6,  name:'Jl. Rasamala',    vol:350.14,  row:1, col:1 },
+  { id:'B-07', no:7,  name:'Jl. Cempaka',     vol:351.32,  row:1, col:2 },
+  { id:'B-08', no:8,  name:'Jl. Kosambi',     vol:237.92,  row:1, col:3 },
+  { id:'B-09', no:9,  name:'Jl. Meranti',     vol:235.04,  row:2, col:0 },
+  { id:'B-10', no:10, name:'Jl. Walikukun',   vol:575.84,  row:2, col:1 },
+  { id:'B-11', no:11, name:'Jl. Kruing',      vol:683.06,  row:2, col:2 },
+  { id:'B-12', no:12, name:'Jl. Waru',        vol:586.02,  row:2, col:3 },
+  { id:'B-13', no:13, name:'Jl. Cemara',      vol:1150.86, row:3, col:0 },
+  { id:'B-14', no:14, name:'Jl. Cendana',     vol:444.40,  row:3, col:1 },
+  { id:'B-15', no:15, name:'AHPC',            vol:168.00,  row:3, col:2 },
+  { id:'B-16', no:16, name:'Jl. Minyak',      vol:462.44,  row:3, col:3 },
+];
+
+const PARIT_RAW = [
+  [1,'Paritan di depan Pumping',16.43],[2,'Paritan di depan RDP Ulin 18 & 19',1.17],
+  [3,'Paritan di depan RDP Ulin 12 & 17',4.87],[4,'Paritan di depan RDP Ulin 10 & 12',1.89],
+  [5,'Paritan di depan RDP Ulin 8 & 9',1.70],[6,'Paritan di sisi Mess Merah',6.18],
+  [7,'Paritan di Jl. Ulin (RDP Pak Ponimin-Ulin 27)',5.24],[8,'Paritan di depan RDP Ulin 25 & 26',0.84],
+  [9,'Paritan di depan RDP Ulin 23 & 24',1.86],[10,'Paritan di depan RDP Ulin 20-22 & Pak Romadon',2.95],
+  [11,'Paritan di Jl. Ulin',2.87],[12,'Paritan di belakang RDP Sonokeling & Ulin',10.67],
+  [13,'Paritan Jl. Jati-Cemara (di bawah Mess Merah)',1.10],[14,'Paritan Jl. Sonokeling di bawah Mess Merah',6.63],
+  [15,'Paritan di depan RDP Sonokeling 7A & 7B',5.18],[16,'Paritan di depan RDP Sonokeling 6A & 6B',3.97],
+  [17,'Paritan di depan RDP Sonokeling 4A & 4B (3)',1.33],[18,'Paritan di depan RDP Sonokeling 4A & 4B (2)',1.04],
+  [19,'Paritan di depan RDP Sonokeling 4A & 4B (1)',3.07],[20,'Paritan di depan RDP Sonokeling 2A & 2B',1.59],
+  [21,'Paritan di depan RDP Sonokeling 1A & 1B',1.61],[22,'Paritan Jl. Sonokeling (sisi kiri Monumen)',7.05],
+  [23,'Paritan Sonokeling di atas Lapangan Bola',4.07],[24,'Paritan Jl. Sonokeling (Bungur-Suren)',1.68],
+  [25,'Paritan Jl. Sonokeling (Suren-Rasamala 42)',2.83],[26,'Paritan Jl. Sonokeling (Rasamala-Cempaka)',1.75],
+  [27,'Paritan di depan Klinik Komperta',3.80],[28,'Paritan Jl. Jati (di bawah Mess Merah)',1.10],
+  [29,'Paritan Jl. Jati (Klinik-RDP Meranti 12)',4.52],[30,'Paritan Jl. Jati (di samping RDP Meranti)',2.03],
+  [31,'Paritan RDP Jati 1A, 1B, 2A, 2B, 3A & 3B',4.12],[32,'Paritan Jl. Jati (Bumper)',6.29],
+  [33,'Paritan Jl. Jati (samping RDP Walikukun 19)',3.11],[34,'Paritan Jl. Jati (samping Walikukun 19-simpang 3 PWP)',3.63],
+  [35,'Paritan Jl. Jati (Depan simpangan PWP-Pos Security RDP)',5.48],[36,'Paritan Jl. Jati (samping PWP-depan SMP)',2.61],
+  [37,'Paritan Jl. Jati (sisi kiri RDP Cendana 1)',6.27],[38,'Paritan Jl. Jati (Cendana 1-Simpang 3 Jl. Cemara)',3.95],
+  [39,'Paritan Jl. Jati (di samping RDP Cemara 1A)',0.89],[40,'Paritan Jl. Waru (depan lapangan tenis)',4.03],
+  [41,'Paritan Jl. Waru (depan lapangan tenis)',4.48],[42,'Paritan Jl. Cemara (di depan RDP Cemara 1A, 1B, 2A & 2B)',7.31],
+  [43,'Paritan Jl. Cemara (3A, 3B, 4A & 4B-Simpangan Kruing)',5.61],[44,'Paritan Jl. Cemara (depan RDP 6A & 6B)',2.56],
+  [45,'Paritan Jl. Cemara (7A & 7B - depan SD)',2.89],[46,'Paritan Jl. Cemara depan lapangan futsal',5.84],
+  [47,'Paritan Jl. Cemara (depan TK)',9.00],[48,'Paritan depan Monumen',5.17],
+  [49,'Paritan Monumen sisi kiri',28.61],[50,'Paritan Monumen area belakang',12.27],
+  [51,'Paritan sisi kanan lapangan bola',5.79],[52,'Paritan di sisi lapangan basket & lapangan voli',14.60],
+  [53,'Paritan di depan Bungur 10A & 10B',1.11],[54,'Paritan di depan RDP Bungur 8A, 8B, 9A & 9B',4.00],
+  [55,'Paritan di depan RDP Bungur 54',0.87],[56,'Paritan di depan RDP Bungur 55',0.78],
+  [57,'Paritan di samping Bungur 53',1.08],[58,'Paritan di samping Suren 43',1.49],
+  [59,'Paritan di samping Suren 44',0.56],[60,'Paritan di samping Suren 45',0.48],
+  [61,'Paritan di samping Suren 46',0.44],[62,'Paritan di samping Suren 47',0.49],
+  [63,'Paritan di samping Suren 48',0.25],[64,'Paritan di depan Suren 3A & 3B',1.15],
+  [65,'Paritan di depan Suren 4A & 4B',1.04],[66,'Paritan besar jembatan Suren-Rasamala',6.61],
+  [67,'Paritan di depan Suren 5A & 5B',0.89],[68,'Paritan di depan Suren 6A, 6B, 7A & 7B',2.22],
+  [69,'Paritan di samping Suren 49',0.26],[70,'Paritan di samping Suren 50',0.71],
+  [71,'Paritan di samping kanan RDP Suren 52',1.50],[72,'Paritan di samping RDP Rasamala 31-35',4.05],
+  [73,'Paritan di samping Rasamala 40 & 41',1.13],[74,'Paritan di samping Rasamala 38 & 39',1.07],
+  [75,'Paritan di depan Rasamala 37',0.48],[76,'Paritan TPA (Rasamala)',1.06],
+  [77,'Paritan di depan Rasamala 1A, 1B, 2A & 2B',2.01],[78,'Paritan di depan Masjid Al-Hikmah (Rasamala)',0.82],
+  [79,'Paritan besar jembatan Rasamala-Cempaka',7.73],[80,'Paritan di samping Masjid Al-Hikmah Jl. Cempaka',2.50],
+  [81,'Paritan di samping Cempaka 26 & 27',1.20],[82,'Paritan di samping RDP Cempaka 28 & 29',1.31],
+  [83,'Paritan di samping Cempaka 30',1.12],[84,'Paritan di samping RDP Meranti 6',2.57],
+  [85,'Paritan di depan RDP Cempaka 24',0.83],[86,'Paritan di samping Cemapaka 22 & 23',1.60],
+  [87,'Paritan di samping Cemapaka 20 & 21',1.73],[88,'Paritan di depan RDP Cempaka 20',0.94],
+  [89,'Paritan besar jembatan Cempaka-Kosambi',8.44],[90,'Paritan di depan RDP Kosambi 15 & 16',1.99],
+  [91,'Paritan di depan Kosambi 17 & 18',1.15],[92,'Paritan di depan RDP Kosambi 19',0.67],
+  [93,'Paritan di depan RDP Kosambi 4A & 4B',3.14],[94,'Paritan di depan RDP Kosambi 13 & 14',1.85],
+  [95,'Paritan di Jl. Meranti (1)',1.94],[96,'Paritan di Jl. Meranti (2)',2.78],
+  [97,'Paritan area Belakang Jl. Meranti',3.78],[98,'Paritan besar jembatan Kosambi-Jati',5.41],
+  [99,'Paritan di depan RDP Walikukun 19',1.30],[100,'Paritan di depan RDP Walikukun 17 & 18',0.99],
+  [101,'Paritan di depan RDP Walikukun 17',0.28],[102,'Paritan di depan RDP Walikukun 15 & 16',1.67],
+  [103,'Paritan di depan RDP Walikukun 13 & 14',0.78],[104,'Paritan di depan RDP Walikukun 13',0.40],
+  [105,'Paritan di depan RDP Walikukun 12',0.54],[106,'Paritan di depan Taman Bermain',0.72],
+  [107,'Paritan sisi kiri Taman Bermain',1.26],[108,'Paritan Jl. Walikukun belakang',5.43],
+  [109,'Paritan Jl. Kruing Belakang',6.45],[110,'Paritan di belakang RDP Cemara 6A & 6B (1)',0.77],
+  [111,'Paritan di belakang RDP Cemara 6A & 6B (2)',0.45],[112,'Paritan belakang Cemara 7A & 7B',0.60],
+  [113,'Paritan jalan menuju AHPC & Lapangan Golf',5.67],[114,'Paritan di belakang RDP Walikukun 17',1.17],
+  [115,'Paritan sisi kiri RDP Sonokeling 6B',2.45],[116,'Paritan sisi kiri RDP Sonokeling 5B',2.68],
+  [117,'Paritan sisi kiri RDP Sonokeling 2B',2.84],[118,'Paritan di Jl. Lapangan Golf',28.93],
+  [119,'Paritan di depan Mess Coklat',11.92],[120,'Paritan di sisi kanan Taman Bermain',1.46],
+  [121,'Paritan AHPC - Driving Range',13.03]
+];
+
+function groupParitByRoad(name) {
+  const n = name.toLowerCase();
+  if (n.includes('ulin')) return 'Ulin';
+  if (n.includes('sonokeling')) return 'Sonokeling';
+  if (n.includes('jati')) return 'Jati';
+  if (n.includes('cemara')) return 'Cemara';
+  if (n.includes('suren')) return 'Suren';
+  if (n.includes('rasamala')) return 'Rasamala';
+  if (n.includes('cempaka') || n.includes('cemapaka')) return 'Cempaka';
+  if (n.includes('kosambi')) return 'Kosambi';
+  if (n.includes('meranti')) return 'Meranti';
+  if (n.includes('walikukun')) return 'Walikukun';
+  if (n.includes('kruing')) return 'Kruing';
+  if (n.includes('waru')) return 'Waru';
+  if (n.includes('bungur')) return 'Bungur';
+  if (n.includes('monumen') || n.includes('lapangan bola') || n.includes('basket')) return 'Monumen';
+  if (n.includes('ahpc') || n.includes('golf') || n.includes('driving')) return 'AHPC';
+  if (n.includes('mess coklat') || n.includes('taman bermain') || n.includes('pumping') || n.includes('klinik') || n.includes('mess merah')) return 'Fasum';
+  return 'Lainnya';
+}
+
+const PARIT = PARIT_RAW.map(([no, name, vol]) => ({
+  id: 'C-' + String(no).padStart(3,'0'),
+  no, name, vol, group: groupParitByRoad(name)
+}));
+
+const PARIT_GROUPS = [
+  { key:'Ulin',       x:2,  y:2,  label:'Ulin' },
+  { key:'Sonokeling', x:6,  y:2,  label:'Sonokeling' },
+  { key:'Jati',       x:10, y:2,  label:'Jati' },
+  { key:'Cemara',     x:14, y:2,  label:'Cemara' },
+  { key:'Suren',      x:2,  y:5,  label:'Suren' },
+  { key:'Rasamala',   x:6,  y:5,  label:'Rasamala' },
+  { key:'Cempaka',    x:10, y:5,  label:'Cempaka' },
+  { key:'Kosambi',    x:14, y:5,  label:'Kosambi' },
+  { key:'Meranti',    x:2,  y:8,  label:'Meranti' },
+  { key:'Walikukun',  x:6,  y:8,  label:'Walikukun' },
+  { key:'Kruing',     x:10, y:8,  label:'Kruing' },
+  { key:'Waru',       x:14, y:8,  label:'Waru' },
+  { key:'Bungur',     x:2,  y:11, label:'Bungur' },
+  { key:'Monumen',    x:6,  y:11, label:'Monumen' },
+  { key:'AHPC',       x:10, y:11, label:'AHPC & Golf' },
+  { key:'Fasum',      x:14, y:11, label:'Fasum Lain' },
+];
+
+const STORAGE_KEY = 'sangatta_cleaning_v5';
+const CYCLE_DAYS = 42;
+const WARN_DAYS = 30;
+
+// === STORAGE POLYFILL ===
+// window.storage adalah API custom Claude.ai. Saat file dijalankan di browser
+// biasa (file:// atau hosted), kita fallback ke localStorage.
+if (typeof window.storage === 'undefined' || !window.storage) {
+  window.storage = {
+    get: async (key) => {
+      try {
+        const v = localStorage.getItem(key);
+        return v === null ? null : { value: v };
+      } catch (e) { return null; }
+    },
+    set: async (key, value) => {
+      try { localStorage.setItem(key, value); return true; }
+      catch (e) { return false; }
+    },
+    delete: async (key) => {
+      try { localStorage.removeItem(key); return true; }
+      catch (e) { return false; }
+    }
+  };
+}
+
+let state = {
+  rintis: RINTIS.map(z => ({ ...z, cat:'rintis', lastCut:null, history:[], unit:'m²' })),
+  sapu:   SAPU.map(z => ({ ...z, cat:'sapu', short:z.name, lastCut:null, history:[], unit:'m²' })),
+  parit:  PARIT.map(z => ({ ...z, cat:'parit', lastCut:null, history:[], unit:'m³' })),
+};
+
+let currentCat = 'rintis';
+let selectedId = null;
+let currentFilter = 'all';
+let selectedGroup = null;
+let mapZoom = 1;
+
+// New state
+let bulkSelected = new Set();
+let undoStack = [];
+let smartBannerDismissed = false;
+let celebratedCats = new Set();
+
+// ===== STORAGE =====
+// ===== SYNC STATUS UI =====
+function setSyncStatus(status, customText) {
+  const badge = document.getElementById('syncBadge');
+  if (!badge) return;
+  badge.classList.remove('sync-loading','sync-online','sync-syncing','sync-offline','sync-error');
+  let text = '';
+  let cls = '';
+  let title = '';
+  switch(status) {
+    case 'online':
+      cls = 'sync-online';
+      text = customText || 'Firebase tersambung';
+      title = 'Data tersinkron real-time ke server. Update otomatis ter-share ke semua device.';
+      break;
+    case 'syncing':
+      cls = 'sync-syncing';
+      text = customText || 'Menyinkron…';
+      title = 'Sedang mengirim perubahan ke server.';
+      break;
+    case 'offline':
+      cls = 'sync-offline';
+      text = customText || 'Offline';
+      title = 'Tidak terhubung internet. Perubahan disimpan lokal & akan sinkron saat online.';
+      break;
+    case 'loading':
+      cls = 'sync-loading';
+      text = customText || 'Memuat…';
+      title = 'Menghubungkan ke Firebase…';
+      break;
+    case 'error':
+      cls = 'sync-error';
+      text = customText || 'Firebase gagal';
+      title = 'Tidak bisa terhubung ke Firebase. Periksa config & rules. Data tetap tersimpan lokal.';
+      break;
+    default:
+      cls = 'sync-offline';
+      text = customText || 'Tidak aktif';
+      title = 'Firebase tidak dikonfigurasi.';
+  }
+  badge.classList.add(cls);
+  badge.querySelector('.sync-badge-text').textContent = text;
+  badge.title = title;
+}
+
+// ===== FIREBASE STATE =====
+let fbReady = false;
+let fbUnsubscribe = null;
+let suppressNextRemoteUpdate = false; // prevent echo from own writes
+
+function isFirebaseEnabled() {
+  return window.__firebase && window.__firebase.enabled === true;
+}
+
+// ===== LOAD: prioritize Firebase, fallback to localStorage =====
+async function loadData() {
+  // Fallback: load from local storage first (instant, biar nggak nunggu network)
+  try {
+    const r = await window.storage.get(STORAGE_KEY);
+    if (r && r.value) {
+      applyDataToState(JSON.parse(r.value));
+    }
+  } catch (e) {}
+
+  // Jika Firebase tersedia, attach listener real-time
+  if (isFirebaseEnabled()) {
+    setSyncStatus('loading');
+    attachFirebaseListener();
+  } else {
+    // Tidak ada firebase — mode local-only
+    setSyncStatus('offline', 'Offline (lokal)');
+  }
+}
+
+function applyDataToState(saved) {
+  ['rintis','sapu','parit'].forEach(cat => {
+    if (!saved || !saved[cat]) return;
+    state[cat] = state[cat].map(item => {
+      const found = saved[cat].find(s => s.id === item.id);
+      return found
+        ? { ...item, lastCut:found.lastCut, note:found.note, history:found.history||[], name:found.name||item.name, vol:found.vol||item.vol }
+        : item;
+    });
+  });
+}
+
+function attachFirebaseListener() {
+  const { db, ref, onValue } = window.__firebase;
+  console.log('[Firebase] Memulai listener...');
+
+  // Timeout — kalau dalam 8 detik nggak ada response, kemungkinan rules block
+  let firstResponseReceived = false;
+  const timeoutId = setTimeout(() => {
+    if (!firstResponseReceived) {
+      console.error('[Firebase] Timeout 8 detik. Kemungkinan rules block akses.');
+      setSyncStatus('error', 'Cek rules Firebase');
+      showToast('Firebase tidak merespon. Cek security rules di Firebase Console.', 'error');
+    }
+  }, 8000);
+
+  try {
+    // Path: cleaning_status/main berisi seluruh state
+    const dataRef = ref(db, 'cleaning_status/main');
+    fbUnsubscribe = onValue(
+      dataRef,
+      (snap) => {
+        firstResponseReceived = true;
+        clearTimeout(timeoutId);
+        fbReady = true;
+        console.log('[Firebase] Data event diterima. Exists:', snap.exists());
+
+        if (!snap.exists()) {
+          // Data belum ada di Firebase — push initial state
+          console.log('[Firebase] Path kosong, push initial state...');
+          setSyncStatus('syncing');
+          pushToFirebase();
+          return;
+        }
+
+        if (suppressNextRemoteUpdate) {
+          suppressNextRemoteUpdate = false;
+          setSyncStatus('online');
+          return;
+        }
+
+        const data = snap.val();
+        if (data && data.payload) {
+          applyDataToState(data.payload);
+          window.storage.set(STORAGE_KEY, JSON.stringify(data.payload)).catch(() => {});
+          renderAll();
+        }
+
+        if (navigator.onLine) {
+          setSyncStatus('online');
+        } else {
+          setSyncStatus('offline', 'Offline (cache)');
+        }
+      },
+      (err) => {
+        firstResponseReceived = true;
+        clearTimeout(timeoutId);
+        console.error('[Firebase] Listener error:', err.code, err.message);
+        if (err.code === 'PERMISSION_DENIED') {
+          setSyncStatus('error', 'Permission ditolak');
+          showToast('Permission denied. Update rules di Firebase Console.', 'error');
+        } else {
+          setSyncStatus('error', 'Error: ' + (err.code || 'unknown'));
+        }
+      }
+    );
+
+    // Listener khusus untuk connection state
+    const connRef = ref(db, '.info/connected');
+    onValue(connRef, (snap) => {
+      const isConnected = snap.val() === true;
+      console.log('[Firebase] Connection state:', isConnected ? 'CONNECTED' : 'DISCONNECTED');
+      if (isConnected && fbReady && firstResponseReceived) {
+        setSyncStatus('online');
+      } else if (!isConnected && firstResponseReceived) {
+        setSyncStatus('offline', 'Offline (cache)');
+      }
+      // Kalau belum dapet response pertama, jangan ubah status — tetap loading
+    });
+  } catch (e) {
+    clearTimeout(timeoutId);
+    console.error('[Firebase] attachFirebaseListener error:', e);
+    setSyncStatus('error', 'Init gagal: ' + e.message);
+  }
+}
+
+async function pushToFirebase() {
+  if (!isFirebaseEnabled() || !fbReady) return;
+  try {
+    const { db, ref, set, serverTimestamp } = window.__firebase;
+    const payload = {};
+    ['rintis','sapu','parit'].forEach(cat => {
+      payload[cat] = state[cat].map(z => ({
+        id:z.id, name:z.name, vol:z.vol,
+        lastCut:z.lastCut || null,
+        note:z.note || null,
+        history:z.history || []
+      }));
+    });
+    suppressNextRemoteUpdate = true;
+    setSyncStatus('syncing');
+    await set(ref(db, 'cleaning_status/main'), {
+      payload,
+      updatedAt: serverTimestamp()
+    });
+    setSyncStatus('online');
+  } catch (e) {
+    console.error('pushToFirebase error:', e);
+    setSyncStatus('error', 'Gagal kirim');
+    showToast('Gagal sinkron ke server', 'error');
+  }
+}
+
+// ===== SAVE: tulis ke local + push ke Firebase =====
+async function saveData() {
+  try {
+    const toSave = {};
+    ['rintis','sapu','parit'].forEach(cat => {
+      toSave[cat] = state[cat].map(z => ({
+        id:z.id, name:z.name, vol:z.vol,
+        lastCut:z.lastCut, note:z.note, history:z.history||[]
+      }));
+    });
+    // Selalu simpan ke localStorage sebagai backup
+    await window.storage.set(STORAGE_KEY, JSON.stringify(toSave));
+  } catch (e) { showToast('Gagal menyimpan lokal', 'error'); }
+
+  // Kalau Firebase aktif, push juga
+  if (isFirebaseEnabled() && fbReady) {
+    pushToFirebase();
+  }
+}
+
+// ===== STATUS =====
+function getStatus(item) {
+  if (!item.lastCut) return 'uncut';
+  const d = daysSince(item.lastCut);
+  if (d < WARN_DAYS) return 'cut';
+  if (d <= CYCLE_DAYS) return 'warning';
+  return 'critical';
+}
+function daysSince(s) {
+  if (!s) return null;
+  return Math.floor((new Date() - new Date(s)) / 86400000);
+}
+function statusColor(s) {
+  return ({ uncut:'#7eb344', cut:'#1e88c4', warning:'#e89030', critical:'#d94835' })[s];
+}
+function statusFill(s) {
+  return ({ uncut:'#b8e070', cut:'#5fb8e8', warning:'#f5a850', critical:'#ec7868' })[s];
+}
+function statusFillDeep(s) {
+  return ({ uncut:'#6ba035', cut:'#1565a3', warning:'#c47020', critical:'#b03525' })[s];
+}
+function statusLabel(s) {
+  return ({
+    uncut:'Belum Dikerjakan',
+    cut:'Sudah Dikerjakan',
+    warning:'Aging — Mendekati Batas',
+    critical:'Telat — Perlu SPK'
+  })[s];
+}
+function getGroupStatus(key) {
+  const items = state.parit.filter(p => p.group === key);
+  if (!items.length) return 'uncut';
+  const ss = items.map(getStatus);
+  if (ss.includes('critical')) return 'critical';
+  if (ss.includes('warning')) return 'warning';
+  if (ss.includes('uncut')) return 'uncut';
+  return 'cut';
+}
+
+// ===== ISO =====
+const TILE_W = 46, TILE_H = 23;
+const ORIGIN_X = 580, ORIGIN_Y = 100;
+function isoX(gx, gy) { return ORIGIN_X + (gx - gy) * TILE_W; }
+function isoY(gx, gy) { return ORIGIN_Y + (gx + gy) * TILE_H; }
+
+function buildDefs() {
+  let d = `<defs>`;
+  ['uncut','cut','warning','critical'].forEach(s => {
+    const fill = statusFill(s);
+    const deep = statusFillDeep(s);
+    d += `
+      <linearGradient id="g-${s}" x1="50%" y1="0%" x2="50%" y2="100%">
+        <stop offset="0%" stop-color="${fill}"/>
+        <stop offset="100%" stop-color="${deep}" stop-opacity="0.85"/>
+      </linearGradient>
+      <linearGradient id="g-${s}-side" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="${deep}"/>
+        <stop offset="100%" stop-color="${deep}" stop-opacity="0.6"/>
+      </linearGradient>
+    `;
+  });
+  d += `
+    <!-- Corporate road pattern -->
+    <pattern id="road" patternUnits="userSpaceOnUse" width="20" height="12">
+      <rect width="20" height="12" fill="#9aa0a8"/>
+      <line x1="0" y1="6" x2="10" y2="6" stroke="white" stroke-width="1" stroke-dasharray="3 3" opacity="0.85"/>
+    </pattern>
+    <!-- Corporate building - flat geometric -->
+    <linearGradient id="bldg-r" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4a5560"/><stop offset="100%" stop-color="#2a3540"/>
+    </linearGradient>
+    <linearGradient id="bldg-w-l" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e8eaed"/><stop offset="100%" stop-color="#c0c3c8"/>
+    </linearGradient>
+    <linearGradient id="bldg-w-r" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#c0c3c8"/><stop offset="100%" stop-color="#9aa0a8"/>
+    </linearGradient>
+    <!-- Tree minimal corporate -->
+    <radialGradient id="tree-g" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#5a7350"/>
+      <stop offset="100%" stop-color="#3a5030"/>
+    </radialGradient>
+    <filter id="soft-shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.2"/>
+      <feOffset dx="0" dy="1.5"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>`;
+  return d;
+}
+
+function buildBg() {
+  // Corporate flat background - no grass tiles, biar yang menonjol tile zona
+  return '';
+}
+
+function buildTrees(occupied) {
+  let t = '';
+  // Minimal tree placement - corporate restrained
+  const spots = [
+    [0,0],[0,4],[0,8],[0,12],
+    [1,6],
+    [11,5],[11,11],
+    [16,1],[16,5],[16,8],[16,13],
+    [6,13],[9,13],[13,13]
+  ];
+  spots.forEach(([gx,gy], i) => {
+    if (occupied.has(`${gx},${gy}`)) return;
+    const tx = isoX(gx,gy);
+    const ty = isoY(gx,gy) + TILE_H;
+    const sz = 0.7;
+    t += `
+      <g class="tree" opacity="0.85">
+        <ellipse cx="${tx}" cy="${ty+3}" rx="${6*sz}" ry="${1.8*sz}" fill="rgba(10,10,12,0.12)"/>
+        <rect x="${tx-1}" y="${ty-2}" width="2" height="${5*sz}" fill="#5a4030"/>
+        <circle cx="${tx}" cy="${ty-7*sz}" r="${7*sz}" fill="url(#tree-g)" opacity="0.9"/>
+        <circle cx="${tx-2.5*sz}" cy="${ty-5*sz}" r="${5*sz}" fill="url(#tree-g)" opacity="0.8"/>
+        <circle cx="${tx+2.5*sz}" cy="${ty-5*sz}" r="${5*sz}" fill="url(#tree-g)" opacity="0.8"/>
+      </g>`;
+  });
+  return t;
+}
+
+// ===== RENDER =====
+function renderMap() {
+  const svg = document.getElementById('isoMap');
+  if (currentCat === 'rintis') svg.innerHTML = renderRintis();
+  else if (currentCat === 'sapu') svg.innerHTML = renderSapu();
+  else svg.innerHTML = renderParit();
+
+  svg.querySelectorAll('.zone, .street, .parit-tag').forEach(el => {
+    el.addEventListener('mouseenter', onHover);
+    el.addEventListener('mouseleave', offHover);
+    el.addEventListener('click', () => {
+      if (el.classList.contains('parit-tag')) selectGroup(el.dataset.group);
+      else selectItem(el.dataset.id);
+    });
+  });
+
+  applyZoom();
+}
+
+function makeLabel(cx, cy, primary, secondary, opts = {}) {
+  // Smart positioning - label DI ATAS tile dengan halo
+  const w = opts.width || Math.max(primary.length, (secondary||'').length) * 5.5 + 18;
+  const h = secondary ? 30 : 18;
+  const ox = cx - w/2;
+  const oy = cy - h/2;
+  const labelBg = `
+    <rect x="${ox}" y="${oy}" width="${w}" height="${h}" rx="6"
+      fill="white" fill-opacity="0.92"
+      stroke="rgba(26,24,23,0.08)" stroke-width="0.5"
+      filter="url(#soft-shadow)"/>
+  `;
+  let text = `<text x="${cx}" y="${cy + (secondary ? -3 : 3.5)}" text-anchor="middle" font-size="${secondary ? 9 : 10}" fill="#3a3833" font-family="Inter" font-weight="${secondary ? 500 : 600}" pointer-events="none">${escapeXml(primary)}</text>`;
+  if (secondary) {
+    text += `<text x="${cx}" y="${cy + 9}" text-anchor="middle" font-size="8.5" fill="#6b675f" font-family="JetBrains Mono" font-weight="400" pointer-events="none" letter-spacing="0.3">${escapeXml(secondary)}</text>`;
+  }
+  return `<g class="tile-label">${labelBg}${text}</g>`;
+}
+
+function renderRintis() {
+  let h = buildDefs() + buildBg();
+  const occupied = new Set();
+  state.rintis.forEach(z => {
+    for (let dx=0; dx<z.w; dx++) for (let dy=0; dy<z.h; dy++) occupied.add(`${z.x+dx},${z.y+dy}`);
+  });
+
+  state.rintis.forEach(z => {
+    const status = getStatus(z);
+    const isSel = z.id === selectedId;
+    const topX = isoX(z.x, z.y), topY = isoY(z.x, z.y);
+    const rightX = isoX(z.x+z.w, z.y), rightY = isoY(z.x+z.w, z.y);
+    const bottomX = isoX(z.x+z.w, z.y+z.h), bottomY = isoY(z.x+z.w, z.y+z.h);
+    const leftX = isoX(z.x, z.y+z.h), leftY = isoY(z.x, z.y+z.h);
+    const depth = 8;
+    const topPath = `M ${topX} ${topY} L ${rightX} ${rightY} L ${bottomX} ${bottomY} L ${leftX} ${leftY} Z`;
+    const sideR = `M ${rightX} ${rightY} L ${rightX} ${rightY+depth} L ${bottomX} ${bottomY+depth} L ${bottomX} ${bottomY} Z`;
+    const sideL = `M ${leftX} ${leftY} L ${leftX} ${leftY+depth} L ${bottomX} ${bottomY+depth} L ${bottomX} ${bottomY} Z`;
+
+    // No grass tufts, no flowers, no fences - corporate clean
+    let deco = '';
+
+    // Bangunan geometric corporate flat
+    if (z.hasBuilding) {
+      const bx = (topX+bottomX)/2;
+      const by = (topY+bottomY)/2;
+      const bw = Math.min(z.w, z.h) * TILE_W * 0.34;
+      const bh = bw * 0.72;
+      deco += `
+        <g filter="url(#soft-shadow)">
+          <ellipse cx="${bx}" cy="${by+3}" rx="${bw*0.88}" ry="${bw*0.22}" fill="rgba(10,10,12,0.12)"/>
+          <path d="M ${bx-bw} ${by-bh*0.3} L ${bx} ${by} L ${bx} ${by-bh*0.75} L ${bx-bw} ${by-bh*1.05} Z" fill="url(#bldg-w-l)" stroke="#5a5d63" stroke-width="0.5"/>
+          <path d="M ${bx+bw} ${by-bh*0.3} L ${bx} ${by} L ${bx} ${by-bh*0.75} L ${bx+bw} ${by-bh*1.05} Z" fill="url(#bldg-w-r)" stroke="#5a5d63" stroke-width="0.5"/>
+          <path d="M ${bx-bw*1.02} ${by-bh*1.05} L ${bx} ${by-bh*1.3} L ${bx+bw*1.02} ${by-bh*1.05} L ${bx} ${by-bh*0.75} Z" fill="url(#bldg-r)" stroke="#1a2530" stroke-width="0.5"/>
+        </g>`;
+    }
+    if (z.hasRoad) {
+      deco += `<path d="${topPath}" fill="url(#road)" opacity="0.7" pointer-events="none"/>`;
+    }
+
+    // LABEL
+    const cx = (topX+bottomX)/2;
+    const cy = (topY+bottomY)/2;
+    const labelY = cy - (z.h * TILE_H * 0.3) - (z.hasBuilding ? 14 : 0);
+
+    let label;
+    const tileArea = z.w * z.h;
+    if (tileArea >= 8) {
+      label = makeLabel(cx, labelY, z.short, z.id);
+    } else if (tileArea >= 2) {
+      label = makeLabel(cx, labelY, z.short);
+    } else {
+      label = makeLabel(cx, labelY, z.id, null, { width: 38 });
+    }
+
+    const selRing = isSel ? `<path d="${topPath}" fill="none" stroke="${'#003366'}" stroke-width="2" stroke-dasharray="4 3" opacity="0.85"/>` : '';
+
+    h += `
+      <g class="zone ${isSel ? 'selected':''}" data-id="${z.id}" data-name="${escapeAttr(z.name)}" data-vol="${z.vol}" data-unit="m²" data-status="${status}">
+        <path d="${sideR}" fill="url(#g-${status}-side)" stroke="#0a0a0c" stroke-width="0.4" opacity="0.85"/>
+        <path d="${sideL}" fill="url(#g-${status}-side)" stroke="#0a0a0c" stroke-width="0.4" opacity="0.7"/>
+        <path class="zone-top" d="${topPath}" fill="url(#g-${status})" stroke="#0a0a0c" stroke-width="0.6"/>
+        ${deco}${selRing}${label}
+      </g>`;
+  });
+
+  h += buildTrees(occupied);
+  return h;
+}
+
+function renderSapu() {
+  let h = buildDefs() + buildBg();
+  const COL_GAP = 4, ROW_GAP = 3;
+  const START_X = 2, START_Y = 2;
+  const SW = 3, SH = 1;
+
+  const occupied = new Set();
+  state.sapu.forEach(s => {
+    const gx = START_X + s.col * COL_GAP;
+    const gy = START_Y + s.row * ROW_GAP;
+    for (let dx=0; dx<SW; dx++) for (let dy=0; dy<SH; dy++) occupied.add(`${gx+dx},${gy+dy}`);
+  });
+
+  state.sapu.forEach(s => {
+    const status = getStatus(s);
+    const isSel = s.id === selectedId;
+    const gx = START_X + s.col * COL_GAP;
+    const gy = START_Y + s.row * ROW_GAP;
+    const topX = isoX(gx, gy), topY = isoY(gx, gy);
+    const rightX = isoX(gx+SW, gy), rightY = isoY(gx+SW, gy);
+    const bottomX = isoX(gx+SW, gy+SH), bottomY = isoY(gx+SW, gy+SH);
+    const leftX = isoX(gx, gy+SH), leftY = isoY(gx, gy+SH);
+    const depth = 5;
+    const topPath = `M ${topX} ${topY} L ${rightX} ${rightY} L ${bottomX} ${bottomY} L ${leftX} ${leftY} Z`;
+    const sideR = `M ${rightX} ${rightY} L ${rightX} ${rightY+depth} L ${bottomX} ${bottomY+depth} L ${bottomX} ${bottomY} Z`;
+    const sideL = `M ${leftX} ${leftY} L ${leftX} ${leftY+depth} L ${bottomX} ${bottomY+depth} L ${bottomX} ${bottomY} Z`;
+    const cx = (topX+bottomX)/2;
+    const cy = (topY+bottomY)/2;
+    const tint = statusFill(status);
+    const tintDeep = statusFillDeep(status);
+    const selRing = isSel ? `<path d="${topPath}" fill="none" stroke="#1a1817" stroke-width="1.8" stroke-dasharray="3 2.5" opacity="0.55"/>` : '';
+
+    const label = makeLabel(cx, cy - 20, s.name);
+
+    h += `
+      <g class="street ${isSel ? 'selected':''}" data-id="${s.id}" data-name="${escapeAttr(s.name)}" data-vol="${s.vol}" data-unit="m²" data-status="${status}">
+        <path d="${sideR}" fill="${tintDeep}" stroke="#3a3833" stroke-width="0.4" opacity="0.55"/>
+        <path d="${sideL}" fill="${tintDeep}" stroke="#3a3833" stroke-width="0.4" opacity="0.42"/>
+        <path class="zone-top" d="${topPath}" fill="url(#road)" stroke="#3a3833" stroke-width="0.6"/>
+        <path d="${topPath}" fill="${tint}" opacity="0.42" pointer-events="none"/>
+        ${selRing}${label}
+      </g>`;
+  });
+
+  h += buildTrees(occupied);
+  return h;
+}
+
+function renderParit() {
+  let h = buildDefs() + buildBg();
+  const occupied = new Set();
+
+  PARIT_GROUPS.forEach(g => {
+    const items = state.parit.filter(p => p.group === g.key);
+    if (!items.length) return;
+
+    occupied.add(`${g.x},${g.y}`); occupied.add(`${g.x+1},${g.y}`); occupied.add(`${g.x+2},${g.y}`);
+    occupied.add(`${g.x},${g.y+1}`); occupied.add(`${g.x+1},${g.y+1}`); occupied.add(`${g.x+2},${g.y+1}`);
+
+    const status = getGroupStatus(g.key);
+    const isSel = selectedGroup === g.key;
+    const cx = (isoX(g.x, g.y) + isoX(g.x+3, g.y+2)) / 2;
+    const cy = (isoY(g.x, g.y) + isoY(g.x+3, g.y+2)) / 2 - 6;
+
+    const doneCount = items.filter(p => getStatus(p) === 'cut').length;
+    const critCount = items.filter(p => getStatus(p) === 'critical').length;
+    const totalVol = items.reduce((s,i) => s+i.vol, 0);
+
+    const fillSoft = statusFill(status);
+    const fillDeep = statusFillDeep(status);
+
+    const tagW = 140;
+    const tagH = 64;
+
+    h += `
+      <g class="parit-tag ${isSel ? 'selected':''}" data-group="${escapeAttr(g.key)}" data-name="Paritan ${escapeAttr(g.label)}" data-vol="${items.length} titik · ${totalVol.toFixed(1)} m³" data-unit="" data-status="${status}">
+        <ellipse cx="${cx}" cy="${cy + tagH/2 + 6}" rx="${tagW/2 - 8}" ry="3.5" fill="rgba(26,24,23,0.16)" filter="url(#label-blur)"/>
+        <rect class="tag-card" x="${cx - tagW/2}" y="${cy - tagH/2}" width="${tagW}" height="${tagH}" rx="13" fill="${fillSoft}" stroke="${fillDeep}" stroke-width="0.8"/>
+        <rect x="${cx - tagW/2}" y="${cy - tagH/2}" width="4" height="${tagH}" fill="${fillDeep}" rx="2"/>
+        <text x="${cx - tagW/2 + 14}" y="${cy - 14}" font-size="11" fill="#1a1817" font-family="Inter" font-weight="600" pointer-events="none" letter-spacing="-0.2">${escapeXml(g.label)}</text>
+        <text x="${cx - tagW/2 + 14}" y="${cy + 10}" font-size="24" fill="#1a1817" font-family="Fraunces" font-weight="400" pointer-events="none" letter-spacing="-0.6">${items.length}</text>
+        <text x="${cx - tagW/2 + 14 + (items.length >= 10 ? 30 : 18)}" y="${cy + 8}" font-size="9" fill="#6b675f" font-family="Inter" font-weight="500" pointer-events="none">titik</text>
+        <text x="${cx + tagW/2 - 14}" y="${cy - 14}" text-anchor="end" font-size="9" fill="#6b675f" font-family="JetBrains Mono" pointer-events="none">${doneCount}/${items.length}</text>
+        <text x="${cx + tagW/2 - 14}" y="${cy + 2}" text-anchor="end" font-size="10" fill="#1a1817" font-family="JetBrains Mono" font-weight="500" pointer-events="none">${totalVol.toFixed(1)}</text>
+        <text x="${cx + tagW/2 - 14}" y="${cy + 14}" text-anchor="end" font-size="9" fill="#6b675f" font-family="Inter" pointer-events="none">m³ total</text>
+        ${critCount > 0 ? `
+          <circle cx="${cx + tagW/2 - 8}" cy="${cy - tagH/2 + 8}" r="6" fill="#9b4a35" stroke="white" stroke-width="1.5"/>
+          <text x="${cx + tagW/2 - 8}" y="${cy - tagH/2 + 11.5}" text-anchor="middle" font-size="8" font-weight="700" fill="white" font-family="Inter" pointer-events="none">${critCount}</text>
+        ` : ''}
+      </g>`;
+  });
+
+  h += buildTrees(occupied);
+  return h;
+}
+
+// ===== HOVER → MAP INFO STRIP (no floating tooltip) =====
+function onHover(e) {
+  const t = e.currentTarget;
+  const vol = t.dataset.vol;
+  const unit = t.dataset.unit;
+  const volDisp = isNaN(parseFloat(vol)) ? vol : parseFloat(vol).toLocaleString('id-ID') + (unit ? ' ' + unit : '');
+  setMapInfo(t.dataset.name, volDisp, t.dataset.status);
+}
+function offHover() {
+  setMapInfo(null);
+}
+function setMapInfo(name, meta, status) {
+  const el = document.getElementById('mapInfo');
+  if (!name) {
+    el.classList.add('empty');
+    el.innerHTML = `<div class="info-left"><span class="info-name">Arahkan ke tile untuk melihat info</span></div>`;
+    return;
+  }
+  el.classList.remove('empty');
+  el.innerHTML = `
+    <div class="info-left">
+      <span class="info-name">${escapeHtml(name)}</span>
+      <span class="info-divider"></span>
+      <span class="info-meta">${meta}</span>
+    </div>
+    <div class="info-status">
+      <span class="dot" style="background:${statusColor(status)}"></span>
+      ${statusLabel(status)}
+    </div>`;
+}
+
+// ===== ZOOM =====
+function applyZoom() {
+  const svg = document.getElementById('isoMap');
+  svg.style.transform = `scale(${mapZoom})`;
+  svg.style.transformOrigin = 'center top';
+}
+function zoomIn() { mapZoom = Math.min(mapZoom + 0.15, 2); applyZoom(); }
+function zoomOut() { mapZoom = Math.max(mapZoom - 0.15, 0.6); applyZoom(); }
+function zoomReset() { mapZoom = 1; applyZoom(); }
+
+// ===== SIDEBAR =====
+function renderDetail() {
+  const el = document.getElementById('detailPane');
+  if (currentCat === 'parit' && selectedGroup && !selectedId) {
+    renderGroupDetail(el, selectedGroup);
+    return;
+  }
+  const item = state[currentCat].find(x => x.id === selectedId);
+  if (!item) {
+    el.innerHTML = `
+      <div class="empty">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <p>Pilih item di peta atau daftar<br>untuk melihat detail.</p>
+      </div>`;
+    return;
+  }
+  const status = getStatus(item);
+  const days = daysSince(item.lastCut);
+  const catLabel = currentCat === 'rintis' ? 'Perintisan' : currentCat === 'sapu' ? 'Penyapuan Jalan' : 'Pembersihan Parit';
+
+  el.innerHTML = `
+    <div class="detail">
+      <span class="code">${item.id} · ${catLabel} · No. ${item.no}</span>
+      <h2>${escapeHtml(item.name)}</h2>
+      <div class="status-line ${status}">
+        <span class="dot"></span>
+        <span>${statusLabel(status)}</span>
+      </div>
+      <div class="info-rows">
+        <div class="info-row">
+          <span class="key">Volume</span>
+          <span class="val">${item.vol.toLocaleString('id-ID')} ${item.unit}</span>
+        </div>
+        <div class="info-row">
+          <span class="key">Frekuensi target</span>
+          <span class="val">${currentCat === 'sapu' ? '2× per minggu' : '5–6 minggu'}</span>
+        </div>
+        <div class="info-row">
+          <span class="key">Terakhir dikerjakan</span>
+          <span class="val">${item.lastCut ? formatDate(item.lastCut) : '—'}</span>
+        </div>
+        <div class="info-row">
+          <span class="key">Hari sejak terakhir</span>
+          <span class="val">${days !== null ? days + ' hari' : '—'}</span>
+        </div>
+        ${item.note ? `<div class="info-row"><span class="key">Catatan</span><span class="val text">${escapeHtml(item.note)}</span></div>` : ''}
+      </div>
+      <div class="actions">
+        <button class="btn primary" onclick="openMarkModal('${item.id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Tandai Selesai
+        </button>
+        <button class="btn" onclick="openEditModal('${item.id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        <button class="btn danger icon" onclick="resetItem('${item.id}')" title="Reset semua riwayat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+      ${item.history && item.history.length ? `
+        <button class="btn" onclick="undoLastMark('${item.id}')" style="margin-top:8px;width:100%;border-style:dashed;color:var(--ink-2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Urungkan Tanda Terakhir
+        </button>
+      ` : ''}
+      ${item.history && item.history.length ? `
+        <details class="hist">
+          <summary>Riwayat · ${item.history.length} entri</summary>
+          <div class="hist-list">
+            ${item.history.slice().reverse().map(h => `
+              <div class="hist-item">
+                <div class="head"><span>${h.workers} pekerja</span><span class="when">${formatDate(h.date)}</span></div>
+                ${h.note ? `<div class="note">${escapeHtml(h.note)}</div>` : ''}
+              </div>`).join('')}
+          </div>
+        </details>` : ''}
+      ${currentCat === 'parit' ? `
+        <button class="btn sm" style="margin-top:16px;width:100%" onclick="selectGroup('${escapeAttr(item.group)}')">← Kembali ke grup ${escapeHtml(item.group)}</button>
+      ` : ''}
+    </div>`;
+}
+
+function renderGroupDetail(el, key) {
+  const items = state.parit.filter(p => p.group === key);
+  const status = getGroupStatus(key);
+  const total = items.reduce((s,i) => s+i.vol, 0);
+  const done = items.filter(p => getStatus(p) === 'cut').length;
+
+  el.innerHTML = `
+    <div class="detail">
+      <span class="code">Grup Parit · ${items.length} titik</span>
+      <h2>${escapeHtml(key)}</h2>
+      <div class="status-line ${status}">
+        <span class="dot"></span>
+        <span>Status grup: ${statusLabel(status)}</span>
+      </div>
+      <div class="info-rows">
+        <div class="info-row"><span class="key">Total volume</span><span class="val">${total.toFixed(2)} m³</span></div>
+        <div class="info-row"><span class="key">Total titik</span><span class="val">${items.length}</span></div>
+        <div class="info-row"><span class="key">Sudah selesai</span><span class="val">${done} / ${items.length}</span></div>
+        <div class="info-row"><span class="key">Pencapaian</span><span class="val">${((done/items.length)*100).toFixed(0)}%</span></div>
+      </div>
+      <div class="group-items">
+        ${items.map(p => {
+          const s = getStatus(p);
+          const shortName = p.name.replace(/^Paritan\s*/i, '');
+          return `
+            <div class="group-item" onclick="selectItem('${p.id}')">
+              <span class="dot" style="background:${statusColor(s)}"></span>
+              <span class="name">${escapeHtml(shortName)}</span>
+              <span class="vol">${p.vol.toFixed(2)} m³</span>
+            </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
+
+function renderList() {
+  const el = document.getElementById('itemList');
+  let items = state[currentCat];
+  if (currentFilter !== 'all') items = items.filter(i => getStatus(i) === currentFilter);
+  el.innerHTML = items.map(item => {
+    const s = getStatus(item);
+    const volDisp = item.vol >= 1000 ? (item.vol/1000).toFixed(1) + 'k' : (Number.isInteger(item.vol) ? item.vol : item.vol.toFixed(1));
+    const shortName = currentCat === 'parit' ? item.name.replace(/^Paritan\s*/i, '') : item.name;
+    const isChecked = bulkSelected.has(item.id);
+    return `
+      <div class="item-row ${item.id === selectedId ? 'active':''}" onclick="onListRowClick(event, '${item.id}')">
+        <span class="checkbox ${isChecked ? 'checked' : ''}" onclick="toggleBulk(event, '${item.id}')" title="Pilih untuk bulk action"></span>
+        <span class="code">${item.id}</span>
+        <span class="name" title="${escapeAttr(item.name)}">${escapeHtml(shortName)}</span>
+        <span class="vol">${volDisp} ${item.unit}</span>
+        <span class="dot" style="background:${statusColor(s)}"></span>
+      </div>`;
+  }).join('') || `<div style="text-align:center;padding:32px 16px;color:var(--ink-3);font-size:12px;font-style:italic">Tidak ada item.</div>`;
+  document.getElementById('listTotal').textContent = `${items.length} item`;
+  renderBulkBar();
+}
+
+function onListRowClick(e, id) {
+  // If clicked on checkbox, ignore (handled separately)
+  if (e.target.closest('.checkbox')) return;
+  selectItem(id);
+}
+
+function toggleBulk(e, id) {
+  e.stopPropagation();
+  if (bulkSelected.has(id)) bulkSelected.delete(id);
+  else bulkSelected.add(id);
+  renderList();
+}
+
+function renderBulkBar() {
+  const el = document.getElementById('bulkBar');
+  if (!el) return;
+  if (bulkSelected.size === 0) {
+    el.innerHTML = '';
+    return;
+  }
+  el.innerHTML = `
+    <div class="bulk-bar">
+      <span class="b-count"><strong>${bulkSelected.size}</strong> dipilih</span>
+      <button onclick="bulkMarkSelected()" class="primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Tandai Selesai
+      </button>
+      <button onclick="bulkClear()">Batal</button>
+    </div>`;
+}
+
+async function bulkMarkSelected() {
+  if (bulkSelected.size === 0) return;
+  if (!confirm(`Tandai ${bulkSelected.size} item terpilih sebagai selesai hari ini?`)) return;
+  const today = new Date().toISOString().split('T')[0];
+  const ids = Array.from(bulkSelected);
+  // Save undo snapshot
+  pushUndoSnapshot();
+  ids.forEach(id => {
+    const item = findItemById(id);
+    if (item) {
+      item.lastCut = today;
+      item.history = item.history || [];
+      item.history.push({ date: today, workers: 6, note: 'Bulk update' });
+    }
+  });
+  bulkSelected.clear();
+  await saveData();
+  renderAll();
+  showToastWithUndo(`${ids.length} item ditandai selesai`);
+}
+
+function bulkClear() {
+  bulkSelected.clear();
+  renderList();
+}
+
+function renderStats() {
+  const items = state[currentCat];
+  let cut=0, warn=0, crit=0, uncut=0;
+  items.forEach(i => {
+    const s = getStatus(i);
+    if (s==='cut') cut++; else if (s==='warning') warn++;
+    else if (s==='critical') crit++; else uncut++;
+  });
+  document.getElementById('stat-cut').textContent = cut;
+  document.getElementById('stat-warn').textContent = warn;
+  document.getElementById('stat-crit').textContent = crit;
+  document.getElementById('stat-total').textContent = items.length;
+  document.getElementById('cnt-all').textContent = items.length;
+  document.getElementById('cnt-uncut').textContent = uncut;
+  document.getElementById('cnt-cut').textContent = cut;
+  document.getElementById('cnt-warn').textContent = warn;
+  document.getElementById('cnt-crit').textContent = crit;
+}
+
+function renderLegend() {
+  const el = document.getElementById('legend');
+  const verb = currentCat === 'sapu' ? 'disapu' : (currentCat === 'parit' ? 'dibersihkan' : 'dirintis');
+  el.innerHTML = `
+    <div class="legend-item"><span class="legend-swatch" style="background:#6b7d52"></span>Belum ${verb}</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#8a9c6a"></span>Sudah ${verb}</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#b8923f"></span>Aging</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#9b4a35"></span>Telat</div>`;
+}
+
+function renderAll() {
+  renderMap();
+  renderDetail();
+  renderList();
+  renderStats();
+  renderLegend();
+  renderSmartBanner();
+  document.getElementById('last-updated').textContent =
+    new Date().toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+  document.getElementById('badge-rintis').textContent = state.rintis.length;
+  document.getElementById('badge-sapu').textContent = state.sapu.length;
+  document.getElementById('badge-parit').textContent = state.parit.length;
+}
+
+// ===== ACTIONS =====
+function selectItem(id) {
+  selectedId = id;
+  if (state.rintis.find(x => x.id === id)) currentCat = 'rintis';
+  else if (state.sapu.find(x => x.id === id)) currentCat = 'sapu';
+  else if (state.parit.find(x => x.id === id)) {
+    currentCat = 'parit';
+    const p = state.parit.find(x => x.id === id);
+    if (p) selectedGroup = p.group;
+  }
+  syncCatTabs();
+  renderAll();
+}
+function selectGroup(key) {
+  selectedGroup = key;
+  selectedId = null;
+  renderAll();
+}
+function switchCat(cat) {
+  currentCat = cat;
+  selectedId = null;
+  selectedGroup = null;
+  currentFilter = 'all';
+  document.querySelectorAll('.filter-pill').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+  syncCatTabs();
+  renderAll();
+}
+function syncCatTabs() {
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === currentCat));
+}
+
+function findItemById(id) {
+  return state.rintis.find(x=>x.id===id) || state.sapu.find(x=>x.id===id) || state.parit.find(x=>x.id===id);
+}
+
+function openMarkModal(id) {
+  selectedId = id;
+  const item = findItemById(id);
+  if (!item) return;
+  const cat = state.rintis.includes(item) ? 'Perintisan Rumput' : state.sapu.includes(item) ? 'Penyapuan Jalan' : 'Pembersihan Parit';
+  document.getElementById('modalCat').textContent = cat;
+  document.getElementById('modalName').textContent = item.name;
+  document.getElementById('modalVol').textContent = `${item.id} · ${item.vol.toLocaleString('id-ID')} ${item.unit}`;
+  document.getElementById('markDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('markWorkers').value = 6;
+  document.getElementById('markNote').value = '';
+  document.getElementById('modalMark').classList.add('active');
+}
+
+function openEditModal(id) {
+  selectedId = id;
+  const item = findItemById(id);
+  if (!item) return;
+  document.getElementById('editName').value = item.name;
+  document.getElementById('editVol').value = item.vol;
+  document.getElementById('editNote').value = item.note || '';
+  document.getElementById('modalEdit').classList.add('active');
+}
+
+function closeModal() {
+  document.querySelectorAll('.modal-bg').forEach(m => m.classList.remove('active'));
+}
+
+async function confirmMark() {
+  const item = findItemById(selectedId);
+  if (!item) return;
+  const date = document.getElementById('markDate').value;
+  if (!date) { showToast('Tanggal wajib diisi','error'); return; }
+  const workers = parseInt(document.getElementById('markWorkers').value) || 1;
+  const note = document.getElementById('markNote').value;
+  pushUndoSnapshot();
+  item.lastCut = date;
+  item.history = item.history || [];
+  item.history.push({ date, workers, note });
+  await saveData();
+  closeModal();
+  renderAll();
+  showToastWithUndo(`${item.id} ditandai selesai`);
+  spawnFx(`+${item.vol.toLocaleString('id-ID')} ${item.unit}`);
+  setTimeout(checkCelebration, 500);
+}
+
+async function confirmEdit() {
+  const item = findItemById(selectedId);
+  if (!item) return;
+  item.name = document.getElementById('editName').value.trim() || item.name;
+  item.vol = parseFloat(document.getElementById('editVol').value) || item.vol;
+  item.note = document.getElementById('editNote').value;
+  await saveData();
+  closeModal();
+  renderAll();
+  showToast(`${item.id} diperbarui`);
+}
+
+async function resetItem(id) {
+  if (!confirm('Reset semua riwayat item ini? Tanggal terakhir & seluruh history akan dihapus.')) return;
+  const item = findItemById(id);
+  if (!item) return;
+  pushUndoSnapshot();
+  item.lastCut = null;
+  item.history = [];
+  await saveData();
+  renderAll();
+  showToastWithUndo(`${item.id} direset`);
+}
+
+async function undoLastMark(id) {
+  const item = findItemById(id);
+  if (!item || !item.history || item.history.length === 0) {
+    showToast('Tidak ada tanda yang bisa diurungkan', 'error');
+    return;
+  }
+  // Remove last history entry
+  item.history.pop();
+  // Update lastCut to second-to-last entry's date, or null if history empty
+  if (item.history.length > 0) {
+    item.lastCut = item.history[item.history.length - 1].date;
+  } else {
+    item.lastCut = null;
+  }
+  await saveData();
+  renderAll();
+  showToast(`Tanda terakhir ${item.id} diurungkan`);
+}
+
+async function markAllCurrent() {
+  const lbl = currentCat === 'rintis' ? 'perintisan' : currentCat === 'sapu' ? 'penyapuan' : 'paritan';
+  if (!confirm(`Tandai SEMUA item ${lbl} sebagai selesai hari ini?`)) return;
+  pushUndoSnapshot();
+  const today = new Date().toISOString().split('T')[0];
+  state[currentCat].forEach(item => {
+    item.lastCut = today;
+    item.history = item.history || [];
+    item.history.push({ date: today, workers: 6, note: 'Bulk update' });
+  });
+  await saveData();
+  renderAll();
+  showToastWithUndo(`Semua ${lbl} ditandai selesai`);
+}
+
+async function resetAllCurrent() {
+  const lbl = currentCat === 'rintis' ? 'perintisan' : currentCat === 'sapu' ? 'penyapuan' : 'paritan';
+  if (!confirm(`Reset semua data ${lbl}? Riwayat akan terhapus permanen.`)) return;
+  pushUndoSnapshot();
+  state[currentCat].forEach(item => { item.lastCut = null; item.history = []; });
+  await saveData();
+  renderAll();
+  showToastWithUndo(`Semua ${lbl} direset`);
+}
+
+// ===== HELPERS =====
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
+}
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeAttr(s) { return escapeHtml(s).replace(/"/g, '&quot;'); }
+function escapeXml(s) { return String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  const icon = type === 'ok'
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+  t.innerHTML = icon + msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function spawnFx(text) {
+  // Corporate version: subtle text float only, no confetti
+  const c = document.querySelector('.map-card');
+  const fx = document.createElement('div');
+  fx.className = 'fx';
+  fx.textContent = text;
+  c.appendChild(fx);
+  setTimeout(() => fx.remove(), 1400);
+}
+
+function spawnConfetti(host, count = 20) {
+  // No-op for corporate version
+}
+
+// ===== LAPORAN HSSE (tabel) =====
+let reportFilter = {
+  cat: 'all',
+  status: 'all',
+  preset: 'all',       // all | done | pending | critical | aging
+  period: 'all',       // all | week | month
+  search: '',
+  sortKey: 'cat',      // cat | id | name | vol | date | status
+  sortDir: 'asc',
+  group: false,        // group by category
+};
+
+function buildReportRows() {
+  const rows = [];
+  const cats = [
+    { key:'rintis', label:'Perintisan Rumput', items: state.rintis },
+    { key:'sapu',   label:'Penyapuan Jalan',   items: state.sapu },
+    { key:'parit',  label:'Pembersihan Parit', items: state.parit },
+  ];
+  cats.forEach(c => {
+    c.items.forEach(item => {
+      const status = getStatus(item);
+      const lastHist = (item.history && item.history.length) ? item.history[item.history.length - 1] : null;
+      rows.push({
+        cat: c.key,
+        catLabel: c.label,
+        id: item.id,
+        no: item.no,
+        name: item.name,
+        vol: item.vol,
+        unit: item.unit,
+        status,
+        lastCut: item.lastCut,
+        days: daysSince(item.lastCut),
+        workers: lastHist ? lastHist.workers : null,
+        note: lastHist ? (lastHist.note || '') : (item.note || ''),
+        historyCount: (item.history || []).length,
+      });
+    });
+  });
+  return rows;
+}
+
+function applyReportFilters(rows) {
+  return rows.filter(r => {
+    // Category
+    if (reportFilter.cat !== 'all' && r.cat !== reportFilter.cat) return false;
+    // Status filter (dropdown)
+    if (reportFilter.status !== 'all' && r.status !== reportFilter.status) return false;
+    // Preset
+    if (reportFilter.preset === 'done' && r.status !== 'cut') return false;
+    if (reportFilter.preset === 'pending' && (r.status === 'cut' || r.status === 'warning')) return false;
+    if (reportFilter.preset === 'critical' && r.status !== 'critical') return false;
+    if (reportFilter.preset === 'aging' && r.status !== 'warning') return false;
+    // Period
+    if (reportFilter.period !== 'all' && r.lastCut) {
+      const days = r.days;
+      if (reportFilter.period === 'week' && days > 7) return false;
+      if (reportFilter.period === 'month' && days > 30) return false;
+    } else if (reportFilter.period !== 'all' && !r.lastCut) {
+      // For period filters, exclude not-yet-done
+      return false;
+    }
+    // Search
+    if (reportFilter.search) {
+      const q = reportFilter.search.toLowerCase();
+      if (!r.name.toLowerCase().includes(q) && !r.id.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function sortRows(rows) {
+  const { sortKey, sortDir } = reportFilter;
+  const dir = sortDir === 'asc' ? 1 : -1;
+  const statusOrder = { critical: 0, warning: 1, uncut: 2, cut: 3 };
+  return [...rows].sort((a, b) => {
+    let va, vb;
+    switch (sortKey) {
+      case 'id': va = a.id; vb = b.id; break;
+      case 'name': va = a.name.toLowerCase(); vb = b.name.toLowerCase(); break;
+      case 'vol': va = a.vol; vb = b.vol; break;
+      case 'date':
+        va = a.lastCut ? new Date(a.lastCut).getTime() : 0;
+        vb = b.lastCut ? new Date(b.lastCut).getTime() : 0;
+        break;
+      case 'status': va = statusOrder[a.status]; vb = statusOrder[b.status]; break;
+      case 'cat':
+      default:
+        // Sort by cat order, then id
+        const catOrder = { rintis: 0, sapu: 1, parit: 2 };
+        va = catOrder[a.cat] * 10000 + a.no;
+        vb = catOrder[b.cat] * 10000 + b.no;
+        break;
+    }
+    if (va < vb) return -1 * dir;
+    if (va > vb) return 1 * dir;
+    return 0;
+  });
+}
+
+function groupRowsByCat(rows) {
+  const groups = { rintis: [], sapu: [], parit: [] };
+  rows.forEach(r => groups[r.cat].push(r));
+  const labels = { rintis: 'Perintisan Rumput', sapu: 'Penyapuan Jalan', parit: 'Pembersihan Parit' };
+  const result = [];
+  ['rintis', 'sapu', 'parit'].forEach(k => {
+    if (groups[k].length > 0) {
+      result.push({ type: 'group', label: labels[k], count: groups[k].length });
+      groups[k].forEach(r => result.push({ type: 'row', data: r }));
+    }
+  });
+  return result;
+}
+
+function renderSummary() {
+  const allRows = buildReportRows();
+  const filtered = applyReportFilters(allRows);
+  const sorted = sortRows(filtered);
+  const today = new Date();
+  const periodStr = today.toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+
+  // counts (filtered)
+  let cut=0, warn=0, crit=0, uncut=0;
+  sorted.forEach(r => {
+    if (r.status === 'cut') cut++;
+    else if (r.status === 'warning') warn++;
+    else if (r.status === 'critical') crit++;
+    else uncut++;
+  });
+  const pct = sorted.length ? ((cut+warn)/sorted.length*100).toFixed(1) : 0;
+
+  // Preset counts (from all data, not filtered)
+  const presetCounts = {
+    all: allRows.length,
+    done: allRows.filter(r => r.status === 'cut').length,
+    aging: allRows.filter(r => r.status === 'warning').length,
+    critical: allRows.filter(r => r.status === 'critical').length,
+    pending: allRows.filter(r => r.status === 'critical' || r.status === 'uncut').length,
+  };
+
+  // Sortable header arrow
+  const sortClass = (key) => {
+    if (reportFilter.sortKey !== key) return 'sortable';
+    return `sortable ${reportFilter.sortDir}`;
+  };
+
+  // Build rows (with grouping if enabled)
+  let tbody;
+  if (reportFilter.group) {
+    const grouped = groupRowsByCat(sorted);
+    tbody = grouped.map(g => {
+      if (g.type === 'group') {
+        return `<tr class="group-row"><td colspan="7">${g.label}<span class="g-count">${g.count} item</span></td></tr>`;
+      }
+      return renderRow(g.data);
+    }).join('');
+  } else {
+    tbody = sorted.map(renderRow).join('');
+  }
+
+  const html = `
+    <div class="report-header">
+      <div class="kop">
+        <div class="kop-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;color:white"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+        </div>
+        <div class="kop-text">
+          <div class="kop-company">SANGATTA FIELD</div>
+          <div class="kop-field">Cleaning Outdoor — Monitoring Pekerjaan</div>
+          <div class="kop-divider"></div>
+          <div class="kop-title">LAPORAN PEKERJAAN CLEANING OUTDOOR</div>
+          <div class="kop-subtitle">Untuk Departemen HSSE</div>
+        </div>
+        <div class="kop-meta">
+          <div class="kop-meta-row"><span class="k">No. Dokumen</span><span class="v">CO/HSSE/${new Date().toISOString().split('T')[0].replace(/-/g,'')}</span></div>
+          <div class="kop-meta-row"><span class="k">Periode</span><span class="v">${periodStr}</span></div>
+          <div class="kop-meta-row"><span class="k">Kontrak</span><span class="v">4710001911</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="preset-row">
+      <button class="preset-btn ${reportFilter.preset==='all'?'active':''}" onclick="setPreset('all')">Semua<span class="pcount">${presetCounts.all}</span></button>
+      <button class="preset-btn ${reportFilter.preset==='done'?'active':''}" onclick="setPreset('done')">Sudah Dikerjakan<span class="pcount">${presetCounts.done}</span></button>
+      <button class="preset-btn ${reportFilter.preset==='aging'?'active':''}" onclick="setPreset('aging')">Aging<span class="pcount">${presetCounts.aging}</span></button>
+      <button class="preset-btn ${reportFilter.preset==='critical'?'active':''}" onclick="setPreset('critical')">Telat<span class="pcount">${presetCounts.critical}</span></button>
+      <button class="preset-btn ${reportFilter.preset==='pending'?'active':''}" onclick="setPreset('pending')">Perlu Tindakan<span class="pcount">${presetCounts.pending}</span></button>
+    </div>
+
+    <div class="report-toolbar">
+      <div class="search-input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Cari nama area atau kode..." value="${escapeAttr(reportFilter.search)}" oninput="setSearch(this.value)">
+      </div>
+      <select id="filterCat" onchange="updateReportFilter()">
+        <option value="all" ${reportFilter.cat==='all'?'selected':''}>Semua Kategori</option>
+        <option value="rintis" ${reportFilter.cat==='rintis'?'selected':''}>Perintisan Rumput</option>
+        <option value="sapu" ${reportFilter.cat==='sapu'?'selected':''}>Penyapuan Jalan</option>
+        <option value="parit" ${reportFilter.cat==='parit'?'selected':''}>Pembersihan Parit</option>
+      </select>
+      <select id="filterPeriod" onchange="updateReportFilter()">
+        <option value="all" ${reportFilter.period==='all'?'selected':''}>Semua Periode</option>
+        <option value="week" ${reportFilter.period==='week'?'selected':''}>7 Hari Terakhir</option>
+        <option value="month" ${reportFilter.period==='month'?'selected':''}>30 Hari Terakhir</option>
+      </select>
+      <button class="btn sm ${reportFilter.group?'primary':''}" onclick="toggleGroup()" style="flex:0 0 auto">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Group per Kategori
+      </button>
+    </div>
+
+    <div class="report-summary-strip">
+      <div class="strip-cell">
+        <div class="s-label">Total Item</div>
+        <div class="s-value">${sorted.length}</div>
+      </div>
+      <div class="strip-cell cut">
+        <div class="s-label">Selesai</div>
+        <div class="s-value">${cut}</div>
+      </div>
+      <div class="strip-cell warn">
+        <div class="s-label">Aging</div>
+        <div class="s-value">${warn}</div>
+      </div>
+      <div class="strip-cell crit">
+        <div class="s-label">Telat</div>
+        <div class="s-value">${crit}</div>
+      </div>
+      <div class="strip-cell uncut">
+        <div class="s-label">Pencapaian</div>
+        <div class="s-value">${pct}<span style="font-size:13px;color:var(--ink-3)">%</span></div>
+      </div>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="${sortClass('id')}" onclick="setSort('id')">Kode</th>
+            <th class="${sortClass('name')}" onclick="setSort('name')">Nama Area / Lokasi</th>
+            <th class="num ${sortClass('vol')}" onclick="setSort('vol')">Volume</th>
+            <th class="${sortClass('date')}" onclick="setSort('date')">Tanggal</th>
+            <th class="center">Pekerja</th>
+            <th class="${sortClass('status')}" onclick="setSort('status')">Status</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sorted.length === 0
+            ? `<tr><td colspan="7" class="empty-row">Tidak ada data sesuai filter. Coba ubah filter di atas.</td></tr>`
+            : tbody}
+        </tbody>
+      </table>
+      <div class="table-foot">
+        <span>Menampilkan ${sorted.length} dari ${allRows.length} item</span>
+        <span>Pencapaian: ${pct}% · Selesai ${cut} · Aging ${warn} · Telat ${crit}</span>
+      </div>
+    </div>
+
+    <div class="signature-block">
+      <div class="sig-cell">
+        <div class="role">Disusun oleh,</div>
+        <div class="line">_________________________</div>
+        <div class="pos">Pengawas Lapangan</div>
+      </div>
+      <div class="sig-cell">
+        <div class="role">Diperiksa oleh,</div>
+        <div class="line">_________________________</div>
+        <div class="pos">HSSE Officer</div>
+      </div>
+      <div class="sig-cell">
+        <div class="role">Disetujui oleh,</div>
+        <div class="line">_________________________</div>
+        <div class="pos">HSSE Manager / Field Manager</div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('summaryBody').innerHTML = html;
+}
+
+function renderRow(r) {
+  const catBadge = r.cat === 'rintis' ? 'R' : r.cat === 'sapu' ? 'S' : 'P';
+  const catColor = r.cat === 'rintis' ? '#6b7d52' : r.cat === 'sapu' ? '#2d4a5c' : '#5a8aa8';
+  return `
+    <tr>
+      <td>
+        <span style="display:inline-flex;align-items:center;gap:6px">
+          <span style="width:18px;height:18px;border-radius:4px;background:${catColor};color:white;font-size:9.5px;font-weight:600;display:inline-grid;place-items:center;flex-shrink:0" title="${r.catLabel}">${catBadge}</span>
+          <span class="row-code">${r.id}</span>
+        </span>
+      </td>
+      <td class="row-name">${escapeHtml(r.name)}</td>
+      <td class="num row-vol">${formatVol(r.vol)} ${r.unit}</td>
+      <td class="${r.lastCut ? 'row-date' : 'row-date muted'}">
+        ${r.lastCut
+          ? `${formatDateShort(r.lastCut)} <span style="color:var(--ink-4);font-size:10px">· ${r.days}h</span>`
+          : 'Belum'}
+      </td>
+      <td class="center row-workers">${r.workers ?? '—'}</td>
+      <td><span class="status-chip ${r.status}"><span class="dot"></span>${statusLabelShort(r.status)}</span></td>
+      <td class="row-note">${r.note ? escapeHtml(r.note) : '—'}</td>
+    </tr>`;
+}
+
+function formatDateShort(d) {
+  return new Date(d).toLocaleDateString('id-ID', { day:'2-digit', month:'short' });
+}
+
+function setPreset(p) {
+  reportFilter.preset = p;
+  renderSummary();
+}
+
+function setSearch(v) {
+  reportFilter.search = v;
+  // Re-render without focus loss: just update rows
+  renderSummary();
+  // Restore focus to input
+  setTimeout(() => {
+    const inp = document.getElementById('searchInput');
+    if (inp) {
+      inp.focus();
+      inp.setSelectionRange(v.length, v.length);
+    }
+  }, 0);
+}
+
+function setSort(key) {
+  if (reportFilter.sortKey === key) {
+    reportFilter.sortDir = reportFilter.sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    reportFilter.sortKey = key;
+    reportFilter.sortDir = 'asc';
+  }
+  renderSummary();
+}
+
+function toggleGroup() {
+  reportFilter.group = !reportFilter.group;
+  renderSummary();
+}
+
+function updateReportFilter() {
+  reportFilter.cat = document.getElementById('filterCat').value;
+  reportFilter.period = document.getElementById('filterPeriod').value;
+  renderSummary();
+}
+
+function statusLabelShort(s) {
+  return ({ uncut:'Belum', cut:'Selesai', warning:'Aging', critical:'Telat' })[s];
+}
+
+function formatVol(v) {
+  if (Number.isInteger(v)) return v.toLocaleString('id-ID');
+  return v.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function formatDateFull(d) {
+  return new Date(d).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+function openSummary() {
+  // Reset filter when opening
+  renderSummary();
+  document.getElementById('modalSummary').classList.add('active');
+}
+
+function buildCSV() {
+  const allRows = buildReportRows();
+  const rows = sortRows(applyReportFilters(allRows));
+  const headers = ['Kode','Kategori','No. Urut','Nama Area / Lokasi','Volume','Satuan','Tanggal Dikerjakan','Hari Sejak','Jumlah Pekerja','Status','Keterangan'];
+  const csvRows = [headers.join(',')];
+  rows.forEach(r => {
+    const cells = [
+      r.id,
+      r.catLabel,
+      r.no,
+      `"${(r.name || '').replace(/"/g, '""')}"`,
+      r.vol,
+      r.unit,
+      r.lastCut || 'Belum dikerjakan',
+      r.days ?? '',
+      r.workers ?? '',
+      statusLabelShort(r.status),
+      `"${(r.note || '').replace(/"/g, '""')}"`
+    ];
+    csvRows.push(cells.join(','));
+  });
+  return csvRows.join('\n');
+}
+
+function copyTableCSV() {
+  const csv = buildCSV();
+  const tsv = csv.replace(/,/g, '\t').replace(/"([^"]*)"/g, '$1');
+  navigator.clipboard.writeText(tsv).then(() => {
+    showToast('Tabel tersalin · Tinggal paste ke Excel');
+  }).catch(() => showToast('Gagal menyalin','error'));
+}
+
+function downloadCSV() {
+  const csv = buildCSV();
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = `Laporan_HSSE_Sangatta_${today}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('File CSV terunduh');
+}
+
+// ===== THEME TOGGLE =====
+function toggleTheme() {
+  const html = document.documentElement;
+  const cur = html.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  try {
+    window.storage.set('sangatta_theme_v5', next).catch(() => {});
+  } catch (e) {}
+  // Re-render map to pick up new colors
+  renderMap();
+}
+
+async function loadTheme() {
+  try {
+    const r = await window.storage.get('sangatta_theme_v5');
+    if (r && r.value) {
+      document.documentElement.setAttribute('data-theme', r.value);
+    }
+  } catch (e) {}
+}
+
+// ===== HELP MODAL =====
+function openHelp() {
+  document.getElementById('modalHelp').classList.add('active');
+}
+
+// ===== SMART BANNER =====
+function renderSmartBanner() {
+  const host = document.getElementById('smartBannerHost');
+  if (!host) return;
+  if (smartBannerDismissed) { host.innerHTML = ''; return; }
+
+  // Count critical & aging across all cats
+  let crit=0, warn=0, never=0;
+  ['rintis','sapu','parit'].forEach(cat => {
+    state[cat].forEach(i => {
+      const s = getStatus(i);
+      if (s === 'critical') crit++;
+      else if (s === 'warning') warn++;
+      if (!i.lastCut) never++;
+    });
+  });
+
+  // Decide banner
+  let html = '';
+  if (crit > 0) {
+    html = `
+      <div class="smart-banner">
+        <div class="smart-banner-inner">
+          <div class="b-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="b-text">
+            <strong><span class="num">${crit} item</span> sudah telat &gt; 42 hari.</strong>
+            ${warn > 0 ? `Tambah <span class="num">${warn} item</span> dalam fase aging.` : ''}
+            Disarankan terbitkan SPK khusus.
+          </div>
+          <div class="b-actions">
+            <button class="btn" onclick="openSummary(); document.getElementById('summaryBody') && setPreset('critical')">Lihat Detail</button>
+          </div>
+          <button class="b-close" onclick="dismissBanner()" aria-label="Tutup">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>`;
+  } else if (warn > 0) {
+    html = `
+      <div class="smart-banner warn">
+        <div class="smart-banner-inner">
+          <div class="b-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="b-text">
+            <strong><span class="num">${warn} item</span> memasuki fase aging (30–42 hari).</strong>
+            Jadwalkan pengerjaan dalam 2 minggu ke depan.
+          </div>
+          <div class="b-actions">
+            <button class="btn" onclick="openSummary(); setTimeout(() => setPreset('aging'), 100)">Lihat Detail</button>
+          </div>
+          <button class="b-close" onclick="dismissBanner()" aria-label="Tutup">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>`;
+  }
+  host.innerHTML = html;
+}
+
+function dismissBanner() {
+  smartBannerDismissed = true;
+  renderSmartBanner();
+}
+
+// ===== UNDO =====
+function pushUndoSnapshot() {
+  const snap = JSON.parse(JSON.stringify({
+    rintis: state.rintis.map(z => ({ id: z.id, lastCut: z.lastCut, history: z.history })),
+    sapu: state.sapu.map(z => ({ id: z.id, lastCut: z.lastCut, history: z.history })),
+    parit: state.parit.map(z => ({ id: z.id, lastCut: z.lastCut, history: z.history })),
+  }));
+  undoStack.push(snap);
+  if (undoStack.length > 20) undoStack.shift();
+  updateUndoButton();
+}
+
+function updateUndoButton() {
+  const btn = document.getElementById('undoBtnTop');
+  if (!btn) return;
+  if (undoStack.length === 0) {
+    btn.disabled = true;
+    btn.title = 'Tidak ada aksi untuk diurungkan';
+  } else {
+    btn.disabled = false;
+    btn.title = `Urungkan aksi terakhir (${undoStack.length} tersedia · Ctrl+Z)`;
+  }
+}
+
+async function undoLast() {
+  if (undoStack.length === 0) {
+    showToast('Tidak ada aksi untuk diurungkan', 'error');
+    return;
+  }
+  const snap = undoStack.pop();
+  ['rintis','sapu','parit'].forEach(cat => {
+    state[cat].forEach(item => {
+      const found = snap[cat].find(s => s.id === item.id);
+      if (found) {
+        item.lastCut = found.lastCut;
+        item.history = found.history;
+      }
+    });
+  });
+  await saveData();
+  renderAll();
+  updateUndoButton();
+  showToast('Aksi dibatalkan');
+}
+
+function showToastWithUndo(msg) {
+  const t = document.getElementById('toast');
+  const icon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+  t.innerHTML = icon + `<span>${msg}</span><button class="undo-btn" id="undoBtn">Urungkan</button>`;
+  t.classList.add('show');
+  // Attach handler directly (lebih reliable daripada inline onclick)
+  const btn = document.getElementById('undoBtn');
+  if (btn) {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      t.classList.remove('show');
+      clearTimeout(t._timer);
+      await undoLast();
+    }, { once: true });
+  }
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 6000);
+}
+
+// ===== EVENTS =====
+document.querySelectorAll('.cat-tab').forEach(b => b.addEventListener('click', () => switchCat(b.dataset.cat)));
+document.querySelectorAll('.filter-pill').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.filter-pill').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentFilter = b.dataset.filter;
+    renderList();
+  });
+});
+
+(function pan() {
+  const canvas = document.getElementById('mapCanvas');
+  let down=false, sx=0, sy=0, sl=0, st=0;
+  canvas.addEventListener('mousedown', e => {
+    if (e.target.closest('.zone, .street, .parit-tag')) return;
+    down=true; sx=e.pageX; sy=e.pageY; sl=canvas.scrollLeft; st=canvas.scrollTop;
+  });
+  canvas.addEventListener('mouseleave', () => down=false);
+  canvas.addEventListener('mouseup', () => down=false);
+  canvas.addEventListener('mousemove', e => {
+    if (!down) return;
+    canvas.scrollLeft = sl - (e.pageX - sx);
+    canvas.scrollTop = st - (e.pageY - sy);
+  });
+  // Wheel zoom
+  canvas.addEventListener('wheel', e => {
+    if (!e.ctrlKey && !e.metaKey) return;
+    e.preventDefault();
+    if (e.deltaY < 0) zoomIn(); else zoomOut();
+  }, { passive: false });
+})();
+
+document.querySelectorAll('.modal-bg').forEach(bg => {
+  bg.addEventListener('click', e => { if (e.target === bg) closeModal(); });
+});
+document.addEventListener('keydown', e => {
+  // Don't handle when typing in input/textarea
+  const inInput = ['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName);
+  if (e.key === 'Escape') closeModal();
+  if (inInput) return;
+  if (e.key === '+' || e.key === '=') zoomIn();
+  if (e.key === '-' || e.key === '_') zoomOut();
+  if (e.key === '?') openHelp();
+  if (e.key === 't' || e.key === 'T') {
+    if (!e.shiftKey) toggleTheme();
+  }
+  if (e.shiftKey && (e.key === 'L' || e.key === 'l')) openSummary();
+  if (e.key === '1') switchCat('rintis');
+  if (e.key === '2') switchCat('sapu');
+  if (e.key === '3') switchCat('parit');
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+    e.preventDefault();
+    undoLast();
+  }
+});
+
+function checkCelebration() {
+  // Confetti if all current category items just became fully done
+  const items = state[currentCat];
+  if (items.length === 0) return;
+  const allDone = items.every(i => {
+    const s = getStatus(i);
+    return s === 'cut';
+  });
+  if (allDone && !celebratedCats.has(currentCat)) {
+    celebratedCats.add(currentCat);
+    const host = document.querySelector('.map-card');
+    if (host) spawnConfetti(host, 40);
+    showToast('🎉 Semua zona dalam kategori ini sudah selesai!');
+  } else if (!allDone) {
+    celebratedCats.delete(currentCat);
+  }
+}
+
+// Online/offline event handler
+window.addEventListener('online', () => {
+  if (isFirebaseEnabled() && fbReady) {
+    setSyncStatus('online');
+  }
+});
+window.addEventListener('offline', () => {
+  setSyncStatus('offline', 'Offline (cache)');
+});
+
+(async function() {
+  await loadTheme();
+  // Tunggu Firebase init terselesaikan dulu (max 2 detik)
+  await new Promise(resolve => {
+    if (window.__firebase) return resolve();
+    let resolved = false;
+    window.addEventListener('firebase-ready', () => {
+      if (!resolved) { resolved = true; resolve(); }
+    }, { once: true });
+    setTimeout(() => {
+      if (!resolved) { resolved = true; resolve(); }
+    }, 2000);
+  });
+  await loadData();
+  renderAll();
+  const canvas = document.getElementById('mapCanvas');
+  setTimeout(() => {
+    canvas.scrollLeft = (canvas.scrollWidth - canvas.clientWidth) / 2;
+    canvas.scrollTop = 30;
+  }, 100);
+})();
+</script>
+
+</body>
+</html>
